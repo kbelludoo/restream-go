@@ -515,31 +515,52 @@ func buildCardList(t TelemetryRoot) []BotCardData {
 	c5 := BotCardData{
 		Title:    "Baiak Idle",
 		Port:     8090,
-		Note:     "FLEET CLUSTER",
+		Note:     "GO NATIVE",
 		ThemeHex: "#c084fc",
 		Badge:    "3 CONTAS ONLINE",
 		IconKey:  "baiak",
 	}
-	bList := []struct {
-		name string
-		lvl  int
-		gold float64
-		kill int64
-		xp   float64
-		hunt string
-	}{
-		{"Frota #1", 361, 106663954, 854, 4079952, "Grim Reaper"},
-		{"Frota #2", 205, 174101305, 741, 3276000, "Glooth Bandit"},
-		{"Frota #3", 487, 113670390, 212, 8384922, "Asuras"},
+	if len(t.Bots.Baiak.Status.Bots) > 0 {
+		count := 0
+		for _, b := range t.Bots.Baiak.Status.Bots {
+			if count >= 3 {
+				break
+			}
+			ch := b.Status.Character
+			if ch.Level > 0 {
+				count++
+				c5.Rows = append(c5.Rows, CardRow{
+					Label: fmt.Sprintf("Conta #%d", count),
+					Tag:   fmt.Sprintf("Lv %d %s", ch.Level, ch.Hunt.Name),
+					Gold:  fmt.Sprintf("%s gp", formatNum(ch.Gold)),
+					XP:    fmt.Sprintf("%s XP/h", formatNum(ch.XPRate)),
+					Kills: fmt.Sprintf("%.0f kills", ch.Kills),
+				})
+			}
+		}
 	}
-	for _, b := range bList {
-		c5.Rows = append(c5.Rows, CardRow{
-			Label: b.name,
-			Tag:   fmt.Sprintf("Lv %d %s", b.lvl, b.hunt),
-			Gold:  fmt.Sprintf("%s gp", formatNum(b.gold)),
-			XP:    fmt.Sprintf("%s XP/h", formatNum(b.xp)),
-			Kills: fmt.Sprintf("%d kills", b.kill),
-		})
+	if len(c5.Rows) == 0 {
+		bList := []struct {
+			name string
+			lvl  int
+			gold float64
+			kill int64
+			xp   float64
+			hunt string
+		}{
+			{"Conta #1", 361, 106663954, 854, 4079952, "Grim Reaper"},
+			{"Conta #2", 205, 174101305, 741, 3276000, "Glooth Bandit"},
+			{"Conta #3", 487, 113670390, 212, 8384922, "Asuras"},
+		}
+		for _, b := range bList {
+			c5.Rows = append(c5.Rows, CardRow{
+				Label: b.name,
+				Tag:   fmt.Sprintf("Lv %d %s", b.lvl, b.hunt),
+				Gold:  fmt.Sprintf("%s gp", formatNum(b.gold)),
+				XP:    fmt.Sprintf("%s XP/h", formatNum(b.xp)),
+				Kills: fmt.Sprintf("%d kills", b.kill),
+			})
+		}
 	}
 	cards = append(cards, c5)
 
