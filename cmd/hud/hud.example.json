@@ -1,0 +1,21 @@
+{
+  "title": "VPS COMMAND CENTER",
+  "subtitle": "STREAM HUD — TELEMETRIA AO VIVO",
+  "bots": [
+    { "id": "huntera", "note": "GO NATIVE" },
+    { "id": "tibidle", "note": "GO NATIVE" },
+    { "id": "sigma", "note": "GO NATIVE" },
+    { "id": "leveling", "note": "PROTOBUF 3" },
+    { "id": "baiak", "note": "BUN / JS HEADLESS" },
+    { "id": "pokeidle", "note": "GO NATIVE" },
+    { "id": "pokeidleworld", "note": "GO NATIVE" },
+    { "id": "kickminer", "note": "ZERO-VIDEO WS" },
+    { "id": "twitchminer", "note": "ZERO-VIDEO WS" }
+  ],
+  "statusUrl": "https://kbelludoo.github.io/bot-template-go/status.json",
+  "ticker": [
+    "VPS CLUSTER ONLINE",
+    "9 BOTS ATIVOS 24/7",
+    "FARM AUTOMATICO CONTINUO"
+  ]
+}

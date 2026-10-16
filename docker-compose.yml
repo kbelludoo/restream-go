@@ -1,0 +1,9 @@
+services:
+  restream:
+    build: .
+    ports:
+      - "1935:1935"
+      - "3008:3008"
+    volumes:
+      - ./config.json:/app/config.json
+    restart: unless-stopped

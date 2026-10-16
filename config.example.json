@@ -1,0 +1,13 @@
+{
+  "rtmpListen": ":1935",
+  "streamPath": "live/stream",
+  "dashboardPort": 3008,
+  "reconnectInitialMs": 1000,
+  "reconnectMaxMs": 15000,
+  "targets": [
+    {
+      "name": "local-test",
+      "url": "rtmp://127.0.0.1:1936/live/out"
+    }
+  ]
+}

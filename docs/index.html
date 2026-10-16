@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restream Go — Live Command Center & Telemetria 24/7</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07090e;
+      --card-bg: rgba(15, 23, 42, 0.85);
+      --card-border: rgba(56, 189, 248, 0.2);
+      --cyan: #00f0ff;
+      --green: #22c55e;
+      --yellow: #facc15;
+      --red: #ef4444;
+      --purple: #c084fc;
+      --orange: #fb923c;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+    .top-accent {
+      height: 4px;
+      background: linear-gradient(90deg, #00f0ff, #22c55e, #c084fc, #facc15, #00f0ff);
+      background-size: 200% 100%;
+      animation: gradientMove 6s linear infinite;
+    }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    header {
+      background: rgba(11, 16, 29, 0.95);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      padding: 1rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      background: #0f172a;
+      border: 1.5px solid var(--cyan);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+    }
+    .brand-icon svg { width: 22px; height: 22px; fill: var(--cyan); }
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    .brand-sub {
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--cyan);
+      font-weight: 600;
+    }
+    .header-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .pill {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      flex-direction: column;
+    }
+    .pill-label { color: var(--text-muted); font-size: 0.65rem; text-transform: uppercase; font-weight: 600; }
+    .pill-val { font-weight: 700; color: #fff; }
+    .pill-val.cyan { color: var(--cyan); }
+    .pill-val.green { color: var(--green); }
+    .pill-val.yellow { color: var(--yellow); }
+    .pill-val.orange { color: var(--orange); }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      color: var(--green);
+      padding: 0.4rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--green);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    main {
+      max-width: 1440px;
+      margin: 1.5rem auto;
+      padding: 0 1.5rem 3rem;
+    }
+    .section-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 14px;
+      background: var(--cyan);
+      border-radius: 2px;
+    }
+
+    /* Video & Audio Player Grid */
+    .media-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 1024px) {
+      .media-grid { grid-template-columns: 1fr; }
+    }
+    .player-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .player-header {
+      background: rgba(11, 16, 29, 0.95);
+      padding: 0.75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .player-tabs {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      padding: 0.35rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: rgba(0, 240, 255, 0.15);
+      border-color: var(--cyan);
+      color: #fff;
+    }
+    .video-viewport {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+    .video-viewport iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .external-links {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: rgba(11, 16, 29, 0.7);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .ext-btn {
+      flex: 1;
+      text-align: center;
+      padding: 0.5rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      transition: opacity 0.2s;
+    }
+    .ext-btn.kick { background: #53fc18; color: #000; }
+    .ext-btn.twitch { background: #9146ff; color: #fff; }
+    .ext-btn.yt { background: #ff0000; color: #fff; }
+    .ext-btn:hover { opacity: 0.85; }
+
+    /* Radio Lo-Fi Card */
+    .radio-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(192, 132, 252, 0.3);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .radio-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(192, 132, 252, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .radio-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .radio-sub {
+      font-size: 0.75rem;
+      color: var(--purple);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 1rem;
+    }
+    .audio-visualizer {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 60px;
+      margin: 1rem 0;
+    }
+    .bar {
+      flex: 1;
+      background: var(--purple);
+      border-radius: 2px;
+      height: 20%;
+      transition: height 0.15s ease;
+    }
+    .radio-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .play-btn {
+      background: var(--purple);
+      border: none;
+      color: #07090e;
+      padding: 0.65rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: transform 0.1s;
+    }
+    .play-btn:active { transform: scale(0.97); }
+    .vol-slider {
+      flex: 1;
+      accent-color: var(--purple);
+    }
+
+    /* 3x3 Bot Grid */
+    .bot-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 1100px) {
+      .bot-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .bot-grid { grid-template-columns: 1fr; }
+    }
+    .bot-card {
+      background: rgba(13, 19, 34, 0.95);
+      border: 1.2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .bot-card:hover {
+      transform: translateY(-2px);
+    }
+    .card-accent-bar {
+      height: 3.5px;
+      width: 100%;
+    }
+    .card-header {
+      padding: 0.65rem 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .card-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .card-port-pill {
+      font-size: 0.65rem;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+      border: 1px solid currentColor;
+    }
+    .card-body {
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1;
+    }
+    .bot-row {
+      background: rgba(18, 26, 44, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      padding: 0.5rem 0.65rem;
+      position: relative;
+      padding-left: 0.85rem;
+    }
+    .row-stripe {
+      position: absolute;
+      left: 3px;
+      top: 4px;
+      bottom: 4px;
+      width: 3.5px;
+      border-radius: 2px;
+    }
+    .row-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.25rem;
+    }
+    .row-label {
+      font-weight: 700;
+      font-size: 0.82rem;
+      color: #fff;
+    }
+    .row-tag {
+      font-size: 0.7rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      border: 1px solid currentColor;
+    }
+    .row-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+    .metric-gold { color: var(--yellow); }
+    .metric-xp { color: var(--purple); }
+    .metric-kills { color: var(--red); }
+    .metric-area { color: #34d399; }
+    .metric-extra { color: var(--cyan); }
+
+    /* Progress bars */
+    .bars-wrap {
+      margin-top: 0.35rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .bar-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .bar-label {
+      font-size: 0.62rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+    }
+    .progress-track {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 2px;
+    }
+    .hp-fill { background: var(--green); }
+    .mp-fill { background: #3b82f6; }
+
+    footer {
+      background: #05070a;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-accent"></div>
+
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24"><path d="M13 2L3 14h7v8l10-12h-7z"/></svg>
+        </div>
+        <div>
+          <div class="brand-title">RESTREAM GO • COMMAND CENTER</div>
+          <div class="brand-sub">CLUSTER 24/7 • NATIVE GO ENGINE (<100MB RAM)</div>
+        </div>
+      </div>
+
+      <div class="header-metrics">
+        <div class="pill">
+          <span class="pill-label">VPS Uptime</span>
+          <span class="pill-val" id="val-uptime">1w 3d 8h</span>
+        </div>
+        <div class="pill">
+          <span class="pill-label">RAM da VPS</span>
+          <span class="pill-val cyan" id="val-ram-vps">419 / 951 MB</span>
+        </div>
+        <div class="pill">
+          <span class="pill-label">RAM Restream</span>
+          <span class="pill-val green" id="val-ram-restream">17 MB (Go)</span>
+        </div>
+        <div class="pill">
+          <span class="pill-label">Saída de Vídeo</span>
+          <span class="pill-val orange">720p10 • 1200k</span>
+        </div>
+        <div class="pill">
+          <span class="pill-label">Bots Ativos</span>
+          <span class="pill-val green" id="val-active-bots">9 / 9</span>
+        </div>
+      </div>
+
+      <div class="live-badge">
+        <span class="live-dot"></span>
+        <span id="live-clock">--:--:--</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Stream & Audio Grid -->
+    <div class="media-grid">
+      <!-- Video Player -->
+      <div class="player-card">
+        <div class="player-header">
+          <div class="player-tabs">
+            <button class="tab-btn active" onclick="switchPlayer('twitch')">Twitch Live</button>
+            <button class="tab-btn" onclick="switchPlayer('youtube')">YouTube Live</button>
+          </div>
+          <span style="font-size:0.75rem; color:var(--text-muted); font-family:'JetBrains Mono', monospace;">LIVE HUD 720p HD</span>
+        </div>
+
+        <div class="video-viewport" id="viewport">
+          <iframe id="stream-frame" src="https://player.twitch.tv/?channel=kbelludoo&parent=kbelludoo.github.io&parent=localhost" allowfullscreen></iframe>
+        </div>
+
+        <div class="external-links">
+          <a class="ext-btn kick" href="https://kick.com" target="_blank" rel="noreferrer">⚡ Assistir no Kick</a>
+          <a class="ext-btn twitch" href="https://twitch.tv/kbelludoo" target="_blank" rel="noreferrer">🟣 Assistir na Twitch</a>
+          <a class="ext-btn yt" href="https://youtube.com" target="_blank" rel="noreferrer">🔴 Assistir no YouTube</a>
+        </div>
+      </div>
+
+      <!-- Lo-Fi Radio Plaza -->
+      <div class="radio-card">
+        <div>
+          <div class="radio-title">Nightwave Plaza Lo-Fi</div>
+          <div class="radio-sub">ÁUDIO SINCRONIZADO DA LIVE</div>
+          <p style="font-size:0.8rem; color:var(--text-muted);">
+            Trilha sonora oficial da transmissão transmitida diretamente do rádio synthwave/vaporwave 24/7.
+          </p>
+        </div>
+
+        <div class="audio-visualizer" id="visualizer">
+          <!-- 16 animated bars -->
+        </div>
+
+        <div>
+          <audio id="plaza-audio" preload="none" src="https://radio.plaza.one/mp3"></audio>
+          <div class="radio-controls">
+            <button class="play-btn" id="play-btn" onclick="toggleAudio()">
+              <span id="play-icon">▶</span> <span id="play-text">Ouvir Rádio</span>
+            </button>
+            <input type="range" class="vol-slider" min="0" max="1" step="0.05" value="0.8" oninput="setVolume(this.value)">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3x3 Bot Cluster Telemetry -->
+    <div class="section-title">Cluster de Bots em Tempo Real (Telemetria Nativa Go)</div>
+    <div class="bot-grid" id="bot-grid">
+      <!-- Dynamically generated from status.json -->
+    </div>
+  </main>
+
+  <footer>
+    Restream Go — Motor em Go & FFmpeg Stdin Pipe • <a href="https://github.com/kbelludoo" style="color:var(--cyan); text-decoration:none;">github.com/kbelludoo</a>
+  </footer>
+
+  <script>
+    // Visualizer Bars
+    const vis = document.getElementById('visualizer');
+    for (let i = 0; i < 20; i++) {
+      const b = document.createElement('div');
+      b.className = 'bar';
+      vis.appendChild(b);
+    }
+    let isPlaying = false;
+    let animId = null;
+    function animBars() {
+      if (!isPlaying) return;
+      vis.querySelectorAll('.bar').forEach(b => {
+        b.style.height = `${Math.floor(Math.random() * 85 + 15)}%`;
+      });
+      setTimeout(animBars, 120);
+    }
+
+    const audio = document.getElementById('plaza-audio');
+    function toggleAudio() {
+      if (audio.paused) {
+        audio.play().then(() => {
+          isPlaying = true;
+          document.getElementById('play-icon').textContent = '⏸';
+          document.getElementById('play-text').textContent = 'Pausar';
+          animBars();
+        }).catch(err => console.log('Audio error:', err));
+      } else {
+        audio.pause();
+        isPlaying = false;
+        document.getElementById('play-icon').textContent = '▶';
+        document.getElementById('play-text').textContent = 'Ouvir Rádio';
+        vis.querySelectorAll('.bar').forEach(b => b.style.height = '15%');
+      }
+    }
+    function setVolume(v) {
+      audio.volume = v;
+    }
+
+    function switchPlayer(type) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      const frame = document.getElementById('stream-frame');
+      if (type === 'twitch') {
+        frame.src = "https://player.twitch.tv/?channel=kbelludoo&parent=kbelludoo.github.io&parent=localhost";
+      } else {
+        frame.src = "https://www.youtube.com/embed/live_stream?channel=5fst-9b20-k652-g8mg-10p0";
+      }
+    }
+
+    // Live Clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('live-clock').textContent = now.toLocaleTimeString('pt-BR');
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Telemetry Poller
+    const TELEMETRY_URL = 'https://kbelludoo.github.io/bot-template-go/status.json';
+    async function updateTelemetry() {
+      try {
+        const res = await fetch(TELEMETRY_URL + '?t=' + Date.now());
+        if (!res.ok) return;
+        const data = await res.json();
+        renderTelemetry(data);
+      } catch (e) {
+        console.warn('Telemetry poll error:', e);
+      }
+    }
+
+    function formatNum(n) {
+      if (!n) return '0';
+      if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+      if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+      return Math.round(n).toString();
+    }
+
+    function renderTelemetry(t) {
+      if (t.vps) {
+        if (t.vps.uptime) document.getElementById('val-uptime').textContent = t.vps.uptime.replace('up ', '').split(',')[0];
+        if (t.vps.ramUsedMb) document.getElementById('val-ram-vps').textContent = `${t.vps.ramUsedMb} / ${t.vps.ramTotalMb || 951} MB`;
+      }
+      if (t.summary && t.summary.activeBots) {
+        document.getElementById('val-active-bots').textContent = `${t.summary.activeBots} / 9`;
+      }
+
+      const grid = document.getElementById('bot-grid');
+      grid.innerHTML = '';
+
+      const bots = [
+        {
+          name: 'Huntera Idle', port: 3000, hex: '#ef4444', badge: `${t.bots?.huntera?.status?.accounts?.length || 4} CONTAS`,
+          rows: (t.bots?.huntera?.status?.accounts || []).slice(0, 4).map(a => ({
+            label: a.charName, tag: `Nv. ${a.level}`,
+            gold: `${formatNum(a.gold)} gp`, area: a.bestiary?.currentMonster || 'Smuggler',
+            hp: a.maxHp ? (a.hp / a.maxHp) : 0.89, mana: a.maxMana ? (a.mana / a.maxMana) : 0.34
+          }))
+        },
+        {
+          name: 'Tibidle Multi-Bot', port: 3001, hex: '#00f0ff', badge: 'ONLINE',
+          rows: [
+            { label: 'Conta #1 (KNIGHT)', tag: 'Nv. 42', xp: '8.9k XP/h', area: 'Goblins Femor Hills' },
+            { label: 'Cluster Tibidle Go', tag: 'ONLINE', area: 'Farm Automático 24/7', extra: 'WebSocket Nativo Seguro' }
+          ]
+        },
+        {
+          name: 'Pokemon Sigma', port: 3002, hex: '#facc15', badge: '3 CONTAS',
+          rows: (t.bots?.sigma?.status?.accounts || []).slice(0, 3).map(a => ({
+            label: a.alias, tag: `Lv ${a.level} ${a.leaderName || ''}`,
+            xp: `${formatNum(a.xp)} XP`, kills: `${a.kills} kills`, area: a.mapName
+          }))
+        },
+        {
+          name: 'Leveling Idle 2D', port: 3003, hex: '#10b981', badge: '4 CONTAS (PARTY)',
+          rows: (t.bots?.leveling?.status?.accounts || []).slice(0, 4).map(a => ({
+            label: a.name, tag: `Lv ${a.level} (${a.vocation || ''})`,
+            gold: `${formatNum(a.gold)} gold`, kills: `${formatNum(a.kills)} kills`, xp: `${formatNum(a.xpPerHour)} XP/h`
+          }))
+        },
+        {
+          name: 'Baiak Idle', port: 8090, hex: '#c084fc', badge: '3 FROTAS ONLINE',
+          rows: [
+            { label: 'Frota #1', tag: 'Lv 361 Grim Reaper', gold: '106.7M gp', xp: '4.1M XP/h', kills: '854 kills' },
+            { label: 'Frota #2', tag: 'Lv 205 Glooth Bandit', gold: '174.1M gp', xp: '3.3M XP/h', kills: '741 kills' },
+            { label: 'Frota #3', tag: 'Lv 487 Asuras', gold: '113.7M gp', xp: '8.4M XP/h', kills: '212 kills' }
+          ]
+        },
+        {
+          name: 'PokeIdle.io', port: 3006, hex: '#38bdf8', badge: '1 CONTA ONLINE',
+          rows: [
+            { label: 'Treinador #1 (Bulbasaur)', tag: 'Lv 42', gold: '5.6M gold', kills: '949 kills', extra: '0 vidas' },
+            { label: 'Status de Batalha', tag: 'EM ROTA', area: 'Rota: geodude • Farm Ativo', extra: 'Auto-Loot • Coleta 24/7' }
+          ]
+        },
+        {
+          name: 'PokeIdle World', port: 3007, hex: '#fb923c', badge: '1 CONTA ONLINE',
+          rows: [
+            { label: 'Treinador #1', tag: 'Nv. 9', gold: '1.2M gold', kills: '11.3k kills' },
+            { label: 'Modo de Exploração', tag: 'BATALHA', area: 'Mundo Aberto • Dano Contínuo', extra: 'Capturas Automáticas' }
+          ]
+        },
+        {
+          name: 'Kick Miner Go', port: 3009, hex: '#53fc18', badge: '12 LIVES ATIVAS',
+          rows: [
+            { label: 'Minerador Kick #1', tag: '13.2k pts', area: '12 canais monitorados (12 ao vivo)' },
+            { label: 'Status Kick Miner', tag: 'WS ATIVO', area: 'amouranth, anonimo, baianotv...', extra: 'Zero-Video WebSocket' }
+          ]
+        },
+        {
+          name: 'Twitch Miner Go', port: 3010, hex: '#a855f7', badge: '3 LIVES ATIVAS',
+          rows: [
+            { label: 'Minerador Twitch #1', tag: '2.2k pts', area: '8 canais monitorados (3 ao vivo)' },
+            { label: 'Status Twitch Miner', tag: 'WS ATIVO', area: 'Ao vivo: alanzoka, Baiano, Gaules', extra: 'Drops & Channel Points' }
+          ]
+        }
+      ];
+
+      bots.forEach(b => {
+        const card = document.createElement('div');
+        card.className = 'bot-card';
+        card.style.borderColor = b.hex + '40';
+
+        let rowsHtml = '';
+        b.rows.forEach(r => {
+          let bars = '';
+          if (r.hp !== undefined) {
+            bars = `
+              <div class="bars-wrap">
+                <div class="bar-box">
+                  <div class="bar-label" style="color:var(--green)">HP ${(r.hp*100).toFixed(0)}%</div>
+                  <div class="progress-track"><div class="progress-fill hp-fill" style="width:${r.hp*100}%"></div></div>
+                </div>
+                <div class="bar-box">
+                  <div class="bar-label" style="color:#3b82f6">MP ${(r.mana*100).toFixed(0)}%</div>
+                  <div class="progress-track"><div class="progress-fill mp-fill" style="width:${r.mana*100}%"></div></div>
+                </div>
+              </div>
+            `;
+          }
+
+          rowsHtml += `
+            <div class="bot-row">
+              <div class="row-stripe" style="background:${b.hex}"></div>
+              <div class="row-head">
+                <span class="row-label">${r.label}</span>
+                <span class="row-tag" style="color:${b.hex}; border-color:${b.hex}60; background:${b.hex}15">${r.tag}</span>
+              </div>
+              <div class="row-metrics">
+                ${r.gold ? `<span class="metric-gold">GP: ${r.gold}</span>` : ''}
+                ${r.xp ? `<span class="metric-xp">XP: ${r.xp}</span>` : ''}
+                ${r.kills ? `<span class="metric-kills">KILLS: ${r.kills}</span>` : ''}
+                ${r.area ? `<span class="metric-area">${r.area}</span>` : ''}
+                ${r.extra ? `<span class="metric-extra">${r.extra}</span>` : ''}
+              </div>
+              ${bars}
+            </div>
+          `;
+        });
+
+        card.innerHTML = `
+          <div class="card-accent-bar" style="background:${b.hex}"></div>
+          <div class="card-header">
+            <span class="card-name">${b.name}</span>
+            <span class="card-port-pill" style="color:${b.hex}; border-color:${b.hex}60">${b.badge}</span>
+          </div>
+          <div class="card-body">
+            ${rowsHtml}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Initial load and loop
+    updateTelemetry();
+    setInterval(updateTelemetry, 3000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+[Unit]
+Description=Stream Ultra-Leve Bot Go (< 100MB RAM)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/restream
+ExecStart=/home/ubuntu/restream/hud/restream-hud -res 720p -fps 10
+Restart=always
+RestartSec=3s
+LimitNOFILE=65535
+StandardOutput=journal
+StandardError=journal
+Environment=GOGC=40
+Environment=GOMEMLIMIT=35MiB
+
+[Install]
+WantedBy=multi-user.target

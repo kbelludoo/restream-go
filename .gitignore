@@ -1,0 +1,10 @@
+config.json
+*.key
+*.exe
+*.log
+*.png
+restream-linux
+restream-hud-linux
+Antigravity-x64.exe
+.DS_Store
+Thumbs.db
