@@ -18,6 +18,7 @@ import (
 	"runtime"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/fogleman/gg"
@@ -1334,7 +1335,7 @@ func drawDynamicOverlays(dc *gg.Context, pulse float64) {
 	dc.Fill()
 
 	// Scrolling Marquee
-	msg := "9 BOTS NATIVOS EM GO (ZERO NODE.JS)   •   HUNTERA • TIBIDLE • POKEMON SIGMA • LEVELING IDLE 2D • BAIAK IDLE • POKEIDLE.IO • POKEIDLE WORLD • KICK MINER • TWITCH MINER   •   FARM AUTOMATICO 24/7   •   LOW-RAM ENGINE (<100MB RAM)   •   SEM DADOS PESSOAIS NA TELA"
+	msg := "9 BOTS NATIVOS EM GO (ZERO NODE.JS)   •   HUNTERA • TIBIDLE • POKEMON SIGMA • LEVELING IDLE 2D • BAIAK IDLE • POKEIDLE.IO • POKEIDLE WORLD • KICK MINER • TWITCH MINER   •   FARM AUTOMATICO 24/7   •   CLUSTER ESTAVEL 24/7   •   LOW-RAM ENGINE (<100MB RAM)"
 	msg = msg + "   •   "
 	dc.Push()
 	dc.DrawRectangle(marqueeStartX, tickerY, W-marqueeStartX-10, tickerH)
@@ -1390,13 +1391,14 @@ func streamFrames(w io.Writer, fps int, telemURL, localSample string) error {
 	t := currentTelem
 	dataMu.RUnlock()
 
-	var staticMu sync.RWMutex
 	drawStaticBackground(staticDC, t)
+
+	var telemDirty atomic.Bool
 
 	stopChan := make(chan struct{})
 	defer close(stopChan)
 
-	// Periodic telemetry updater goroutine
+	// Periodic telemetry updater goroutine: fetches network data only, zero drawing
 	go func() {
 		ticker := time.NewTicker(fetchPeriod)
 		defer ticker.Stop()
@@ -1406,14 +1408,7 @@ func streamFrames(w io.Writer, fps int, telemURL, localSample string) error {
 				return
 			case <-ticker.C:
 				fetchTelemetry(telemURL, localSample)
-				dataMu.RLock()
-				cur := currentTelem
-				dataMu.RUnlock()
-
-				staticMu.Lock()
-				staticDC.ResetClip()
-				drawStaticBackground(staticDC, cur)
-				staticMu.Unlock()
+				telemDirty.Store(true)
 			}
 		}
 	}()
@@ -1429,9 +1424,17 @@ func streamFrames(w io.Writer, fps int, telemURL, localSample string) error {
 	for range frameTick.C {
 		pulse := time.Since(start).Seconds()
 
-		staticMu.RLock()
+		// Redraw background sequentially in THIS goroutine if new data arrived
+		if telemDirty.Swap(false) {
+			dataMu.RLock()
+			cur := currentTelem
+			dataMu.RUnlock()
+
+			staticDC.ResetClip()
+			drawStaticBackground(staticDC, cur)
+		}
+
 		copy(dynPix, staticPix)
-		staticMu.RUnlock()
 
 		dc.ResetClip()
 		drawDynamicOverlays(dc, pulse)
@@ -1456,9 +1459,11 @@ func startLiveStreamLoop(fps int, kickURL, twitchURL, ytURL, radioURL string, te
 		kickURL, twitchURL, ytURL)
 
 	bitrate := "1200k"
+	bufsize := "2400k"
 	queueSize := "32"
 	if frameW > 1280 {
 		bitrate = "2000k"
+		bufsize = "4000k"
 		queueSize = "64"
 	}
 
@@ -1483,11 +1488,11 @@ func startLiveStreamLoop(fps int, kickURL, twitchURL, ytURL, radioURL string, te
 			"-i", radioURL,
 			"-c:v", "libx264",
 			"-preset", "ultrafast",
-			"-tune", "stillimage",
+			"-tune", "zerolatency",
 			"-threads", "1",
 			"-b:v", bitrate,
 			"-maxrate", bitrate,
-			"-bufsize", bitrate,
+			"-bufsize", bufsize,
 			"-pix_fmt", "yuv420p",
 			"-g", fmt.Sprintf("%d", fps*2),
 			"-keyint_min", fmt.Sprintf("%d", fps),
