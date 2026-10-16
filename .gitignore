@@ -3,6 +3,7 @@ config.json
 *.exe
 *.log
 *.png
+!docs/preview.png
 restream-linux
 restream-hud-linux
 Antigravity-x64.exe
