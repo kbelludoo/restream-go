@@ -696,11 +696,23 @@
         },
         {
           name: 'Baiak Idle', port: 8090, hex: '#c084fc', icon: 'baiak', badge: '3 CONTAS (GO NATIVE)',
-          rows: [
-            { label: 'Conta #1', tag: 'Lv 361 Grim Reaper', gold: '106.7M gp', xp: '4.1M XP/h', kills: '854 kills' },
-            { label: 'Conta #2', tag: 'Lv 205 Glooth Bandit', gold: '174.1M gp', xp: '3.3M XP/h', kills: '741 kills' },
-            { label: 'Conta #3', tag: 'Lv 487 Asuras', gold: '113.7M gp', xp: '8.4M XP/h', kills: '212 kills' }
-          ]
+          rows: (t.bots?.baiak?.status?.bots ? ['acc-1', 'acc-2', 'acc-3'].map((k, idx) => {
+            const b = t.bots.baiak.status.bots[k];
+            if (!b) return null;
+            const st = b.status || {};
+            const hunt = st.hunt?.name || st.currentArea || 'Grim Reaper';
+            return {
+              label: b.label || `Conta #${idx+1}`,
+              tag: `Lv ${st.level || 0} ${hunt}`,
+              gold: `${formatNum(st.gold || 0)} gp`,
+              xp: `${formatNum(st.rates?.xpPerHour || 0)} XP/h`,
+              kills: `${st.kills || 0} kills`
+            };
+          }).filter(Boolean) : [
+            { label: 'Conta #1', tag: 'Lv 361 Grim Reaper', gold: '108.1M gp', xp: '5.4M XP/h', kills: '69 kills' },
+            { label: 'Conta #2', tag: 'Lv 224 Grim Reaper', gold: '73.8M gp', xp: '3.4M XP/h', kills: '79 kills' },
+            { label: 'Conta #3', tag: 'Lv 487 Naga Lair', gold: '104.6M gp', xp: '6.7M XP/h', kills: '49 kills' }
+          ])
         },
         {
           name: 'PokeIdle.io', port: 3006, hex: '#38bdf8', icon: 'pokeidle', badge: '1 CONTA ONLINE',

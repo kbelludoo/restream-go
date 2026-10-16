@@ -116,19 +116,23 @@ type TelemetryRoot struct {
 			Port   int    `json:"port"`
 			Status struct {
 				Bots map[string]struct {
-					Name   string `json:"name"`
-					Online bool   `json:"online"`
-					Status struct {
-						Character struct {
-							Level   int     `json:"level"`
-							Gold    float64 `json:"gold"`
-							Kills   float64 `json:"kills"`
-							XPRate  float64 `json:"xpRate"`
-							Stamina string  `json:"stamina"`
-							Hunt    struct {
-								Name string `json:"name"`
-							} `json:"hunt"`
-						} `json:"character"`
+					Label     string `json:"label"`
+					Name      string `json:"name"`
+					Online    bool   `json:"online"`
+					Reachable bool   `json:"reachable"`
+					Status    struct {
+						Level       int     `json:"level"`
+						Gold        float64 `json:"gold"`
+						Kills       float64 `json:"kills"`
+						CurrentArea string  `json:"currentArea"`
+						Vocation    string  `json:"vocation"`
+						Hunt        struct {
+							Name string `json:"name"`
+						} `json:"hunt"`
+						Rates struct {
+							XPPerHour   float64 `json:"xpPerHour"`
+							GoldPerHour float64 `json:"goldPerHour"`
+						} `json:"rates"`
 					} `json:"status"`
 				} `json:"bots"`
 			} `json:"status"`
@@ -520,21 +524,28 @@ func buildCardList(t TelemetryRoot) []BotCardData {
 		Badge:    "3 CONTAS ONLINE",
 		IconKey:  "baiak",
 	}
-	if len(t.Bots.Baiak.Status.Bots) > 0 {
-		count := 0
-		for _, b := range t.Bots.Baiak.Status.Bots {
-			if count >= 3 {
-				break
-			}
-			ch := b.Status.Character
-			if ch.Level > 0 {
-				count++
+	accKeys := []string{"acc-1", "acc-2", "acc-3"}
+	for i, k := range accKeys {
+		if b, ok := t.Bots.Baiak.Status.Bots[k]; ok {
+			st := b.Status
+			if st.Level > 0 {
+				lbl := b.Label
+				if lbl == "" {
+					lbl = fmt.Sprintf("Conta #%d", i+1)
+				}
+				huntName := st.Hunt.Name
+				if huntName == "" {
+					huntName = st.CurrentArea
+				}
+				if huntName == "" {
+					huntName = "Grim Reaper"
+				}
 				c5.Rows = append(c5.Rows, CardRow{
-					Label: fmt.Sprintf("Conta #%d", count),
-					Tag:   fmt.Sprintf("Lv %d %s", ch.Level, ch.Hunt.Name),
-					Gold:  fmt.Sprintf("%s gp", formatNum(ch.Gold)),
-					XP:    fmt.Sprintf("%s XP/h", formatNum(ch.XPRate)),
-					Kills: fmt.Sprintf("%.0f kills", ch.Kills),
+					Label: lbl,
+					Tag:   fmt.Sprintf("Lv %d %s", st.Level, huntName),
+					Gold:  fmt.Sprintf("%s gp", formatNum(st.Gold)),
+					XP:    fmt.Sprintf("%s XP/h", formatNum(st.Rates.XPPerHour)),
+					Kills: fmt.Sprintf("%.0f kills", st.Kills),
 				})
 			}
 		}
@@ -548,9 +559,9 @@ func buildCardList(t TelemetryRoot) []BotCardData {
 			xp   float64
 			hunt string
 		}{
-			{"Conta #1", 361, 106663954, 854, 4079952, "Grim Reaper"},
-			{"Conta #2", 205, 174101305, 741, 3276000, "Glooth Bandit"},
-			{"Conta #3", 487, 113670390, 212, 8384922, "Asuras"},
+			{"Conta #1", 361, 108123319, 69, 5440234, "Grim Reaper"},
+			{"Conta #2", 224, 73828615, 79, 3400763, "Grim Reaper"},
+			{"Conta #3", 487, 104670269, 49, 6703858, "Naga Lair"},
 		}
 		for _, b := range bList {
 			c5.Rows = append(c5.Rows, CardRow{
