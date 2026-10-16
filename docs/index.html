@@ -666,7 +666,7 @@
 
       const bots = [
         {
-          name: 'Huntera Idle', port: 3000, hex: '#ef4444', badge: `${t.bots?.huntera?.status?.accounts?.length || 4} CONTAS`,
+          name: 'Huntera Idle', port: 3000, hex: '#ef4444', icon: 'huntera', badge: `${t.bots?.huntera?.status?.accounts?.length || 4} CONTAS`,
           rows: (t.bots?.huntera?.status?.accounts || []).slice(0, 4).map(a => ({
             label: a.charName, tag: `Nv. ${a.level}`,
             gold: `${formatNum(a.gold)} gp`, area: a.bestiary?.currentMonster || 'Smuggler',
@@ -674,28 +674,28 @@
           }))
         },
         {
-          name: 'Tibidle Multi-Bot', port: 3001, hex: '#00f0ff', badge: 'ONLINE',
+          name: 'Tibidle Multi-Bot', port: 3001, hex: '#00f0ff', icon: 'tibidle', badge: 'ONLINE',
           rows: [
             { label: 'Conta #1 (KNIGHT)', tag: 'Nv. 42', xp: '8.9k XP/h', area: 'Goblins Femor Hills' },
             { label: 'Cluster Tibidle Go', tag: 'ONLINE', area: 'Farm Automático 24/7', extra: 'WebSocket Nativo Seguro' }
           ]
         },
         {
-          name: 'Pokemon Sigma', port: 3002, hex: '#facc15', badge: '3 CONTAS',
+          name: 'Pokemon Sigma', port: 3002, hex: '#facc15', icon: 'sigma', badge: '3 CONTAS',
           rows: (t.bots?.sigma?.status?.accounts || []).slice(0, 3).map(a => ({
             label: a.alias, tag: `Lv ${a.level} ${a.leaderName || ''}`,
             xp: `${formatNum(a.xp)} XP`, kills: `${a.kills} kills`, area: a.mapName
           }))
         },
         {
-          name: 'Leveling Idle 2D', port: 3003, hex: '#10b981', badge: '4 CONTAS (PARTY)',
+          name: 'Leveling Idle 2D', port: 3003, hex: '#10b981', icon: 'leveling', badge: '4 CONTAS (PARTY)',
           rows: (t.bots?.leveling?.status?.accounts || []).slice(0, 4).map(a => ({
             label: a.name, tag: `Lv ${a.level} (${a.vocation || ''})`,
             gold: `${formatNum(a.gold)} gold`, kills: `${formatNum(a.kills)} kills`, xp: `${formatNum(a.xpPerHour)} XP/h`
           }))
         },
         {
-          name: 'Baiak Idle', port: 8090, hex: '#c084fc', badge: '3 FROTAS ONLINE',
+          name: 'Baiak Idle', port: 8090, hex: '#c084fc', icon: 'baiak', badge: '3 FROTAS ONLINE',
           rows: [
             { label: 'Frota #1', tag: 'Lv 361 Grim Reaper', gold: '106.7M gp', xp: '4.1M XP/h', kills: '854 kills' },
             { label: 'Frota #2', tag: 'Lv 205 Glooth Bandit', gold: '174.1M gp', xp: '3.3M XP/h', kills: '741 kills' },
@@ -703,28 +703,28 @@
           ]
         },
         {
-          name: 'PokeIdle.io', port: 3006, hex: '#38bdf8', badge: '1 CONTA ONLINE',
+          name: 'PokeIdle.io', port: 3006, hex: '#38bdf8', icon: 'pokeidle', badge: '1 CONTA ONLINE',
           rows: [
             { label: 'Treinador #1 (Bulbasaur)', tag: 'Lv 42', gold: '5.6M gold', kills: '949 kills', extra: '0 vidas' },
             { label: 'Status de Batalha', tag: 'EM ROTA', area: 'Rota: geodude • Farm Ativo', extra: 'Auto-Loot • Coleta 24/7' }
           ]
         },
         {
-          name: 'PokeIdle World', port: 3007, hex: '#fb923c', badge: '1 CONTA ONLINE',
+          name: 'PokeIdle World', port: 3007, hex: '#fb923c', icon: 'pokeidleworld', badge: '1 CONTA ONLINE',
           rows: [
             { label: 'Treinador #1', tag: 'Nv. 9', gold: '1.2M gold', kills: '11.3k kills' },
             { label: 'Modo de Exploração', tag: 'BATALHA', area: 'Mundo Aberto • Dano Contínuo', extra: 'Capturas Automáticas' }
           ]
         },
         {
-          name: 'Kick Miner Go', port: 3009, hex: '#53fc18', badge: '12 LIVES ATIVAS',
+          name: 'Kick Miner Go', port: 3009, hex: '#53fc18', icon: 'kickminer', badge: '12 LIVES ATIVAS',
           rows: [
             { label: 'Minerador Kick #1', tag: '13.2k pts', area: '12 canais monitorados (12 ao vivo)' },
             { label: 'Status Kick Miner', tag: 'WS ATIVO', area: 'amouranth, anonimo, baianotv...', extra: 'Zero-Video WebSocket' }
           ]
         },
         {
-          name: 'Twitch Miner Go', port: 3010, hex: '#a855f7', badge: '3 LIVES ATIVAS',
+          name: 'Twitch Miner Go', port: 3010, hex: '#a855f7', icon: 'twitchminer', badge: '3 LIVES ATIVAS',
           rows: [
             { label: 'Minerador Twitch #1', tag: '2.2k pts', area: '8 canais monitorados (3 ao vivo)' },
             { label: 'Status Twitch Miner', tag: 'WS ATIVO', area: 'Ao vivo: alanzoka, Baiano, Gaules', extra: 'Drops & Channel Points' }
@@ -777,7 +777,10 @@
         card.innerHTML = `
           <div class="card-accent-bar" style="background:${b.hex}"></div>
           <div class="card-header">
-            <span class="card-name">${b.name}</span>
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <img src="assets/icons/${b.icon}.png" alt="${b.name}" style="width:22px; height:22px; object-fit:contain; border-radius:4px;">
+              <span class="card-name">${b.name}</span>
+            </div>
             <span class="card-port-pill" style="color:${b.hex}; border-color:${b.hex}60">${b.badge}</span>
           </div>
           <div class="card-body">

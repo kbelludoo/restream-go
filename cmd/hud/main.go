@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -199,6 +200,7 @@ type BotCardData struct {
 	Note     string
 	ThemeHex string
 	Badge    string
+	IconKey  string
 	Rows     []CardRow
 }
 
@@ -212,6 +214,50 @@ type CardRow struct {
 	Extra string  // Extra telemetry (sky blue)
 	HP    float64 // HP bar (green)
 	Mana  float64 // Mana bar (blue)
+}
+
+//go:embed assets/icons/*.png
+var iconFS embed.FS
+
+var (
+	botIcons = make(map[string]image.Image)
+	iconMu   sync.RWMutex
+)
+
+func init() {
+	entries, err := iconFS.ReadDir("assets/icons")
+	if err == nil {
+		for _, e := range entries {
+			if strings.HasSuffix(e.Name(), ".png") {
+				f, err := iconFS.Open("assets/icons/" + e.Name())
+				if err == nil {
+					img, err := png.Decode(f)
+					_ = f.Close()
+					if err == nil {
+						key := strings.TrimSuffix(e.Name(), ".png")
+						botIcons[key] = img
+					}
+				}
+			}
+		}
+	}
+}
+
+func drawScaledIcon(dc *gg.Context, img image.Image, x, y, targetW, targetH float64) {
+	bounds := img.Bounds()
+	srcW := float64(bounds.Dx())
+	srcH := float64(bounds.Dy())
+	if srcW <= 0 || srcH <= 0 {
+		return
+	}
+	scaleX := targetW / srcW
+	scaleY := targetH / srcH
+
+	dc.Push()
+	dc.Translate(x, y)
+	dc.Scale(scaleX, scaleY)
+	dc.DrawImage(img, 0, 0)
+	dc.Pop()
 }
 
 var (
@@ -362,6 +408,7 @@ func buildCardList(t TelemetryRoot) []BotCardData {
 		Note:     "GO NATIVE",
 		ThemeHex: "#ef4444",
 		Badge:    fmt.Sprintf("%d CONTAS EM JOGO", len(t.Bots.Huntera.Status.Accounts)),
+		IconKey:  "huntera",
 	}
 	for i, a := range t.Bots.Huntera.Status.Accounts {
 		if i >= 4 {
@@ -393,6 +440,7 @@ func buildCardList(t TelemetryRoot) []BotCardData {
 		Note:     "GO NATIVE",
 		ThemeHex: "#00f0ff",
 		Badge:    "ONLINE",
+		IconKey:  "tibidle",
 	}
 	for i, a := range t.Bots.Tibidle.Status.Accounts {
 		if i >= 2 {
@@ -423,6 +471,7 @@ func buildCardList(t TelemetryRoot) []BotCardData {
 		Note:     "GO NATIVE",
 		ThemeHex: "#facc15",
 		Badge:    fmt.Sprintf("%d CONTAS EM JOGO", len(t.Bots.Sigma.Status.Accounts)),
+		IconKey:  "sigma",
 	}
 	for i, a := range t.Bots.Sigma.Status.Accounts {
 		if i >= 3 {
@@ -445,6 +494,7 @@ func buildCardList(t TelemetryRoot) []BotCardData {
 		Note:     "PROTOBUF 3",
 		ThemeHex: "#10b981",
 		Badge:    "4 CONTAS (PARTY)",
+		IconKey:  "leveling",
 	}
 	for i, a := range t.Bots.Leveling.Status.Accounts {
 		if i >= 4 {
@@ -467,6 +517,7 @@ func buildCardList(t TelemetryRoot) []BotCardData {
 		Note:     "FLEET CLUSTER",
 		ThemeHex: "#c084fc",
 		Badge:    "3 CONTAS ONLINE",
+		IconKey:  "baiak",
 	}
 	bList := []struct {
 		name string
@@ -498,6 +549,7 @@ func buildCardList(t TelemetryRoot) []BotCardData {
 		Note:     "GO NATIVE",
 		ThemeHex: "#38bdf8",
 		Badge:    "1 CONTA ONLINE",
+		IconKey:  "pokeidle",
 	}
 	for i, a := range t.Bots.Pokeidle.Status.Accounts {
 		if i >= 1 {
@@ -529,6 +581,7 @@ func buildCardList(t TelemetryRoot) []BotCardData {
 		Note:     "GO NATIVE",
 		ThemeHex: "#fb923c",
 		Badge:    "1 CONTA ONLINE",
+		IconKey:  "pokeidleworld",
 	}
 	for i, a := range t.Bots.Pokeidleworld.Status.Accounts {
 		if i >= 1 {
@@ -563,6 +616,7 @@ func buildCardList(t TelemetryRoot) []BotCardData {
 		Note:     "ZERO-VIDEO WS",
 		ThemeHex: "#53fc18",
 		Badge:    "12 LIVES ATIVAS",
+		IconKey:  "kickminer",
 	}
 	kickPts := float64(12910)
 	liveKickCount := 2
@@ -601,6 +655,7 @@ func buildCardList(t TelemetryRoot) []BotCardData {
 		Note:     "ZERO-VIDEO WS",
 		ThemeHex: "#a855f7",
 		Badge:    "3 LIVES ATIVAS",
+		IconKey:  "twitchminer",
 	}
 	twPts := float64(1090)
 	liveTwCount := 3
@@ -880,25 +935,38 @@ func drawStaticBackground(dc *gg.Context, t TelemetryRoot) {
 		headH := 38.0
 		headY := cy + 10.0
 		headPadX := 10.0
+		iconSize := 24.0
+		titleX := cx + headPadX + 8.0
 		if is720p {
 			headH = 28.0
 			headY = cy + 5.0
 			headPadX = 6.0
+			iconSize = 20.0
 		}
 		dc.SetColor(color.RGBA{themeCol.R / 5, themeCol.G / 5, themeCol.B / 5, 180})
 		dc.DrawRoundedRectangle(cx+headPadX, headY, cardW-2*headPadX, headH, 6)
 		dc.Fill()
 
+		// Game Icon (Sprite / Badge)
+		iconMu.RLock()
+		if icon, ok := botIcons[c.IconKey]; ok && icon != nil {
+			iconX := cx + headPadX + 5.0
+			iconY := headY + (headH-iconSize)/2.0
+			drawScaledIcon(dc, icon, iconX, iconY, iconSize, iconSize)
+			titleX = iconX + iconSize + 6.0
+		}
+		iconMu.RUnlock()
+
 		// Bot Title
 		titleSize := 18.0
 		titleY := cy + 34.0
 		if is720p {
-			titleSize = 13.5
+			titleSize = 13.0
 			titleY = cy + 23.5
 		}
 		dc.SetColor(color.RGBA{255, 255, 255, 255})
 		dc.SetFontFace(mustFace(true, titleSize))
-		dc.DrawString(c.Title, cx+headPadX+8, titleY)
+		dc.DrawString(c.Title, titleX, titleY)
 		titleW, _ := dc.MeasureString(c.Title)
 
 		// Port Pill
@@ -908,14 +976,14 @@ func drawStaticBackground(dc *gg.Context, t TelemetryRoot) {
 		portPillY := cy + 16.0
 		portPadY := 32.0
 		if is720p {
-			portFontSize = 8.5
+			portFontSize = 8.0
 			portH = 17.0
 			portPillY = cy + 9.0
 			portPadY = 21.5
 		}
 		dc.SetFontFace(mustFace(true, portFontSize))
 		pw, _ := dc.MeasureString(portStr)
-		portX := cx + headPadX + 8 + titleW + 10.0
+		portX := titleX + titleW + 8.0
 		dc.SetColor(color.RGBA{themeCol.R / 5, themeCol.G / 5, themeCol.B / 5, 220})
 		dc.DrawRoundedRectangle(portX, portPillY, pw+10, portH, 4)
 		dc.Fill()

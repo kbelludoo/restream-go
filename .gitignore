@@ -4,6 +4,8 @@ config.json
 *.log
 *.png
 !docs/preview.png
+!cmd/hud/assets/icons/*.png
+!docs/assets/icons/*.png
 restream-linux
 restream-hud-linux
 Antigravity-x64.exe
