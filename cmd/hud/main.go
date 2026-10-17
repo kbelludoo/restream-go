@@ -372,20 +372,26 @@ func fetchTelemetry(url string, localPath string) {
 	var data []byte
 	var err error
 
-	// Try local file first if exists
-	if localPath != "" {
-		if d, e := os.ReadFile(localPath); e == nil && len(d) > 0 {
-			data = d
+	// 1. Sempre tentar buscar remoto primeiro com cache-buster (?t=timestamp) e no-cache
+	if url != "" {
+		reqURL := fmt.Sprintf("%s?t=%d", url, time.Now().UnixNano())
+		req, reqErr := http.NewRequest("GET", reqURL, nil)
+		if reqErr == nil {
+			req.Header.Set("Cache-Control", "no-cache, no-store, must-revalidate")
+			req.Header.Set("Pragma", "no-cache")
+			client := http.Client{Timeout: 5 * time.Second}
+			resp, httpErr := client.Do(req)
+			if httpErr == nil && resp.StatusCode == 200 {
+				data, err = io.ReadAll(resp.Body)
+				resp.Body.Close()
+			}
 		}
 	}
 
-	// Try remote if local not available or periodically
-	if len(data) == 0 && url != "" {
-		client := http.Client{Timeout: 4 * time.Second}
-		resp, errHttp := client.Get(url)
-		if errHttp == nil && resp.StatusCode == 200 {
-			data, err = io.ReadAll(resp.Body)
-			resp.Body.Close()
+	// 2. Fallback para arquivo local apenas se HTTP falhar e ainda nao tivermos dados
+	if len(data) == 0 && localPath != "" {
+		if d, e := os.ReadFile(localPath); e == nil && len(d) > 0 {
+			data = d
 		}
 	}
 

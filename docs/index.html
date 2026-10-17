@@ -675,10 +675,21 @@
         },
         {
           name: 'Tibidle Multi-Bot', port: 3001, hex: '#00f0ff', icon: 'tibidle', badge: 'ONLINE',
-          rows: [
-            { label: 'Conta #1 (KNIGHT)', tag: 'Nv. 42', xp: '8.9k XP/h', area: 'Goblins Femor Hills' },
+          rows: (t.bots?.tibidle?.status?.accounts?.length ? t.bots.tibidle.status.accounts.slice(0, 1).map(a => ({
+            label: `${a.name || 'Conta #1'} (${a.vocation || 'KNIGHT'})`,
+            tag: `Nv. ${a.level || 0}`,
+            area: `${a.status || 'hunting'} (${a.currentHunt || a.targetHunt || 'Dwarven Mines'})`,
+            xp: `${formatNum(a.expPerHour || 0)} XP/h`,
+            extra: `Online: ${t.bots?.tibidle?.status?.uptime || '64h'}`
+          })).concat([{
+            label: 'Cluster Tibidle Go',
+            tag: 'ONLINE',
+            area: 'Farm Automático 24/7',
+            extra: 'WebSocket Nativo Seguro'
+          }]) : [
+            { label: 'Conta #1 (KNIGHT)', tag: 'Nv. 48', xp: '14.0k XP/h', area: 'hunting (Dwarven Mines)' },
             { label: 'Cluster Tibidle Go', tag: 'ONLINE', area: 'Farm Automático 24/7', extra: 'WebSocket Nativo Seguro' }
-          ]
+          ])
         },
         {
           name: 'Pokemon Sigma', port: 3002, hex: '#facc15', icon: 'sigma', badge: '3 CONTAS',
@@ -715,31 +726,54 @@
           ])
         },
         {
-          name: 'PokeIdle.io', port: 3006, hex: '#38bdf8', icon: 'pokeidle', badge: '1 CONTA ONLINE',
-          rows: [
-            { label: 'Treinador #1 (Bulbasaur)', tag: 'Lv 42', gold: '5.6M gold', kills: '949 kills', extra: '0 vidas' },
+          name: 'PokeIdle.io', port: 3006, hex: '#38bdf8', icon: 'pokeidle', badge: `${t.bots?.pokeidle?.status?.accounts?.length || 1} CONTA ONLINE`,
+          rows: (t.bots?.pokeidle?.status?.accounts?.length ? t.bots.pokeidle.status.accounts.slice(0, 1).map(a => ({
+            label: `${a.name || 'Treinador #1'} (${a.vocation || 'Bulbasaur'})`,
+            tag: `Nv. ${a.level || 0}`,
+            gold: `${formatNum(a.gold || 0)} gold`,
+            kills: `${a.kills || 0} kills`,
+            area: `Rota: ${a.currentArea || 'geodude'}`,
+            extra: `${a.lives || 0} vidas`
+          })).concat([{
+            label: 'Status de Batalha',
+            tag: 'EM ROTA',
+            area: `Rota: ${t.bots?.pokeidle?.status?.accounts[0]?.currentArea || 'geodude'} • Farm Ativo`,
+            extra: 'Auto-Loot • Coleta 24/7'
+          }]) : [
+            { label: 'Treinador #1 (Bulbasaur)', tag: 'Lv 47', gold: '8.5M gold', kills: '2179 kills', extra: '0 vidas' },
             { label: 'Status de Batalha', tag: 'EM ROTA', area: 'Rota: geodude • Farm Ativo', extra: 'Auto-Loot • Coleta 24/7' }
-          ]
+          ])
         },
         {
-          name: 'PokeIdle World', port: 3007, hex: '#fb923c', icon: 'pokeidleworld', badge: '1 CONTA ONLINE',
-          rows: [
-            { label: 'Treinador #1', tag: 'Nv. 9', gold: '1.2M gold', kills: '11.3k kills' },
+          name: 'PokeIdle World', port: 3007, hex: '#fb923c', icon: 'pokeidleworld', badge: `${t.bots?.pokeidleworld?.status?.accounts?.length || 1} CONTA ONLINE`,
+          rows: (t.bots?.pokeidleworld?.status?.accounts?.length ? t.bots.pokeidleworld.status.accounts.slice(0, 1).map(a => ({
+            label: a.activePokemon ? `${a.name} (${a.activePokemon})` : (a.name || 'Treinador #1'),
+            tag: `Nv. ${a.level || 0}`,
+            gold: `${formatNum(a.gold || 0)} gold`,
+            kills: `${a.kills || 0} kills`,
+            extra: a.captures ? `Capturas: ${a.captures}` : 'Auto-Loot'
+          })).concat([{
+            label: 'Modo de Exploração',
+            tag: 'BATALHA',
+            area: 'Mundo Aberto • Dano Contínuo',
+            extra: 'Capturas Automáticas'
+          }]) : [
+            { label: 'Treinador #1', tag: 'Nv. 31', gold: '0 gold', kills: '1 kills' },
             { label: 'Modo de Exploração', tag: 'BATALHA', area: 'Mundo Aberto • Dano Contínuo', extra: 'Capturas Automáticas' }
-          ]
+          ])
         },
         {
-          name: 'Kick Miner Go', port: 3009, hex: '#53fc18', icon: 'kickminer', badge: '12 LIVES ATIVAS',
+          name: 'Kick Miner Go', port: 3009, hex: '#53fc18', icon: 'kickminer', badge: `${t.bots?.kickminer?.status?.totalStreams || 12} LIVES ATIVAS`,
           rows: [
-            { label: 'Minerador Kick #1', tag: '13.2k pts', area: '12 canais monitorados (12 ao vivo)' },
+            { label: 'Minerador Kick #1', tag: '20.2k pts', area: `${t.bots?.kickminer?.status?.totalStreams || 12} canais monitorados (12 ao vivo)` },
             { label: 'Status Kick Miner', tag: 'WS ATIVO', area: 'amouranth, anonimo, baianotv...', extra: 'Zero-Video WebSocket' }
           ]
         },
         {
           name: 'Twitch Miner Go', port: 3010, hex: '#a855f7', icon: 'twitchminer', badge: '3 LIVES ATIVAS',
           rows: [
-            { label: 'Minerador Twitch #1', tag: '2.2k pts', area: '8 canais monitorados (3 ao vivo)' },
-            { label: 'Status Twitch Miner', tag: 'WS ATIVO', area: 'Ao vivo: alanzoka, Baiano, Gaules', extra: 'Drops & Channel Points' }
+            { label: 'Minerador Twitch #1', tag: '2.2k pts', area: '8 canais monitorados (2 ao vivo)' },
+            { label: 'Status Twitch Miner', tag: 'WS ATIVO', area: 'Ao vivo: Baiano, Gaules', extra: 'Drops & Channel Points' }
           ]
         }
       ];
