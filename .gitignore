@@ -8,6 +8,7 @@ config.json
 !docs/assets/icons/*.png
 restream-linux
 restream-hud-linux
+restream-hud-lowram-linux
 Antigravity-x64.exe
 .DS_Store
 Thumbs.db

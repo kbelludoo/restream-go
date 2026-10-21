@@ -8,7 +8,7 @@ func BenchmarkHUDFrame(b *testing.B) {
 		w, h int
 	}{{"720p", 1280, 720}, {"1080p", 1920, 1080}} {
 		b.Run(res.name, func(b *testing.B) {
-			frameW, frameH = res.w, res.h
+			setFrameSize(b, res.w, res.h)
 			renderer := newFrameRenderer()
 			drawStaticBackground(renderer.dc, TelemetryRoot{})
 			drawDynamicOverlays(renderer.dc, renderer.marquee, 0)
