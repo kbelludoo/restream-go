@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"embed"
 	"encoding/json"
 	"flag"
@@ -22,7 +23,9 @@ import (
 	"time"
 
 	"github.com/fogleman/gg"
+	"github.com/golang/freetype/truetype"
 	"golang.org/x/image/font"
+	"golang.org/x/image/font/basicfont"
 )
 
 var (
@@ -30,7 +33,7 @@ var (
 	frameH = 720
 )
 
-const fetchPeriod = 8 * time.Second
+const fetchPeriod = 3 * time.Second
 
 // Telemetry JSON structs
 type TelemetryRoot struct {
@@ -269,6 +272,7 @@ var (
 	dataMu       sync.RWMutex
 	currentTelem TelemetryRoot
 	faceCache    = map[string]font.Face{}
+	fontCache    = map[string]*truetype.Font{}
 	faceMu       sync.Mutex
 )
 
@@ -310,15 +314,36 @@ func mustFace(bold bool, size float64) font.Face {
 	} else {
 		path = pickFont(fontCandidatesRegular)
 	}
-	f, err := gg.LoadFontFace(path, size)
+	f, err := loadFont(path)
 	if err != nil {
 		alt := pickFont(fontCandidatesRegular)
 		if alt != "" {
-			f, _ = gg.LoadFontFace(alt, size)
+			f, err = loadFont(alt)
 		}
 	}
-	faceCache[key] = f
-	return f
+	var face font.Face = basicfont.Face7x13
+	if err == nil {
+		face = truetype.NewFace(f, &truetype.Options{Size: size})
+	}
+	faceCache[key] = face
+	return face
+}
+
+// Called with faceMu held. All sizes share the same parsed font and TTF bytes.
+func loadFont(path string) (*truetype.Font, error) {
+	if f, ok := fontCache[path]; ok {
+		return f, nil
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	f, err := truetype.Parse(data)
+	if err != nil {
+		return nil, err
+	}
+	fontCache[path] = f
+	return f, nil
 }
 
 func getProcessRSSMb() float64 {
@@ -381,9 +406,15 @@ func fetchTelemetry(url string, localPath string) {
 			req.Header.Set("Pragma", "no-cache")
 			client := http.Client{Timeout: 5 * time.Second}
 			resp, httpErr := client.Do(req)
-			if httpErr == nil && resp.StatusCode == 200 {
-				data, err = io.ReadAll(resp.Body)
-				resp.Body.Close()
+			if httpErr == nil {
+				if resp.StatusCode == http.StatusOK {
+					// Bound memory even if the endpoint returns an unexpectedly large body.
+					data, err = io.ReadAll(io.LimitReader(resp.Body, 2*1024*1024+1))
+					if len(data) > 2*1024*1024 || err != nil {
+						data = nil
+					}
+				}
+				_ = resp.Body.Close()
 			}
 		}
 	}
@@ -395,9 +426,12 @@ func fetchTelemetry(url string, localPath string) {
 		}
 	}
 
-	if err != nil || len(data) == 0 {
+	if len(data) == 0 {
 		return
 	}
+
+	// Remove UTF-8 BOM if present so standard json.Unmarshal succeeds reliably
+	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
 
 	var root TelemetryRoot
 	if err := json.Unmarshal(data, &root); err == nil {
@@ -1301,7 +1335,7 @@ func drawStaticBackground(dc *gg.Context, t TelemetryRoot) {
 	dc.DrawString("LIVE CLUSTER", 34, badgeY+badgeTextYOffset)
 }
 
-func drawDynamicOverlays(dc *gg.Context, pulse float64) {
+func drawDynamicOverlays(dc, marquee *gg.Context, pulse float64) {
 	W := float64(frameW)
 	H := float64(frameH)
 	is720p := (frameW <= 1280)
@@ -1375,21 +1409,18 @@ func drawDynamicOverlays(dc *gg.Context, pulse float64) {
 	// Scrolling Marquee
 	msg := "9 BOTS NATIVOS EM GO (ZERO NODE.JS)   •   HUNTERA • TIBIDLE • POKEMON SIGMA • LEVELING IDLE 2D • BAIAK IDLE • POKEIDLE.IO • POKEIDLE WORLD • KICK MINER • TWITCH MINER   •   FARM AUTOMATICO 24/7   •   CLUSTER ESTAVEL 24/7   •   LOW-RAM ENGINE (<100MB RAM)"
 	msg = msg + "   •   "
-	dc.Push()
-	dc.DrawRectangle(marqueeStartX, tickerY, W-marqueeStartX-10, tickerH)
-	dc.Clip()
-	dc.SetColor(color.RGBA{226, 232, 240, 255})
-	dc.SetFontFace(mustFace(true, marqueeFontSize))
-	tw, _ := dc.MeasureString(msg)
+	// The footer context shares the frame's pixels. Its bounds provide clipping
+	// without gg.Clip(), which allocates a full-frame mask and text buffers.
+	marquee.SetColor(color.RGBA{226, 232, 240, 255})
+	marquee.SetFontFace(mustFace(true, marqueeFontSize))
+	tw, _ := marquee.MeasureString(msg)
 	scrollSpeed := 65.0
 	if is720p {
 		scrollSpeed = 50.0
 	}
 	offX := mathMod(pulse*scrollSpeed+tw, tw+W-marqueeStartX-10)
-	dc.DrawString(msg, W-offX, tickerY+marqueeYOffset)
-	dc.DrawString(msg, W-offX+tw, tickerY+marqueeYOffset)
-	dc.Pop()
-	dc.ResetClip()
+	marquee.DrawString(msg, W-offX, tickerY+marqueeYOffset)
+	marquee.DrawString(msg, W-offX+tw, tickerY+marqueeYOffset)
 }
 
 func mathMod(a, b float64) float64 {
@@ -1420,8 +1451,10 @@ func getEnv(key, fallback string) string {
 }
 
 func streamFrames(w io.Writer, fps int, telemURL, localSample string) error {
-	staticDC := gg.NewContext(frameW, frameH)
-	dc := gg.NewContext(frameW, frameH)
+	if fps <= 0 || fps > 120 {
+		return fmt.Errorf("fps deve estar entre 1 e 120")
+	}
+	renderer := newFrameRenderer()
 
 	fetchTelemetry(telemURL, localSample)
 
@@ -1429,7 +1462,7 @@ func streamFrames(w io.Writer, fps int, telemURL, localSample string) error {
 	t := currentTelem
 	dataMu.RUnlock()
 
-	drawStaticBackground(staticDC, t)
+	drawStaticBackground(renderer.dc, t)
 
 	var telemDirty atomic.Bool
 
@@ -1455,8 +1488,7 @@ func streamFrames(w io.Writer, fps int, telemURL, localSample string) error {
 	frameTick := time.NewTicker(interval)
 	defer frameTick.Stop()
 
-	staticPix := staticDC.Image().(*image.RGBA).Pix
-	dynPix := dc.Image().(*image.RGBA).Pix
+	pix := renderer.dc.Image().(*image.RGBA).Pix
 
 	start := time.Now()
 	for range frameTick.C {
@@ -1468,22 +1500,69 @@ func streamFrames(w io.Writer, fps int, telemURL, localSample string) error {
 			cur := currentTelem
 			dataMu.RUnlock()
 
-			staticDC.ResetClip()
-			drawStaticBackground(staticDC, cur)
+			drawStaticBackground(renderer.dc, cur)
 		}
 
-		copy(dynPix, staticPix)
-
-		dc.ResetClip()
-		drawDynamicOverlays(dc, pulse)
-		dc.ResetClip()
+		// Both animated regions clear themselves; the rest of the frame persists.
+		drawDynamicOverlays(renderer.dc, renderer.marquee, pulse)
 
 		// Zero-copy: send RGBA raw buffer directly to stdout / stdin pipe
-		if _, err := w.Write(dynPix); err != nil {
+		if _, err := w.Write(pix); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func newFFmpegCommand(fps int, teeDest, radioURL string) *exec.Cmd {
+	bitrate := "1200k"
+	bufsize := "2400k"
+	// Raw RGBA packets are 3.5 MiB at 720p and 7.9 MiB at 1080p.
+	// Keep only two pending frames and let the pipe apply backpressure.
+	queueSize := "2"
+	if frameW > 1280 {
+		bitrate = "2000k"
+		bufsize = "4000k"
+	}
+
+	return exec.Command("ffmpeg",
+		"-hide_banner", "-loglevel", "warning",
+		"-filter_threads", "1",
+		"-thread_queue_size", queueSize,
+		"-f", "rawvideo",
+		"-pix_fmt", "rgba",
+		"-video_size", fmt.Sprintf("%dx%d", frameW, frameH),
+		"-framerate", fmt.Sprintf("%d", fps),
+		"-i", "pipe:0",
+		"-thread_queue_size", "32",
+		"-probesize", "32k",
+		"-analyzeduration", "0",
+		"-reconnect", "1",
+		"-reconnect_at_eof", "1",
+		"-reconnect_streamed", "1",
+		"-reconnect_delay_max", "5",
+		"-i", radioURL,
+		"-c:v", "libx264",
+		"-preset", "ultrafast",
+		"-tune", "zerolatency",
+		"-threads", "1",
+		"-b:v", bitrate,
+		"-maxrate", bitrate,
+		"-bufsize", bufsize,
+		"-pix_fmt", "yuv420p",
+		"-g", fmt.Sprintf("%d", fps*2),
+		"-keyint_min", fmt.Sprintf("%d", fps),
+		"-sc_threshold", "0",
+		"-c:a", "aac",
+		"-b:a", "128k",
+		"-ar", "44100",
+		"-af", "aresample=async=1000,volume=0.8",
+		"-flags", "+global_header",
+		"-f", "tee",
+		"-map", "0:v",
+		"-map", "1:a",
+		teeDest,
+	)
 }
 
 func startLiveStreamLoop(fps int, kickURL, twitchURL, ytURL, radioURL string, telemURL, localSample string) {
@@ -1496,55 +1575,9 @@ func startLiveStreamLoop(fps int, kickURL, twitchURL, ytURL, radioURL string, te
 	teeDest := fmt.Sprintf("[f=flv:onfail=ignore:flvflags=no_duration_filesize]%s|[f=flv:onfail=ignore:flvflags=no_duration_filesize]%s|[f=flv:onfail=ignore:flvflags=no_duration_filesize]%s",
 		kickURL, twitchURL, ytURL)
 
-	bitrate := "1200k"
-	bufsize := "2400k"
-	queueSize := "32"
-	if frameW > 1280 {
-		bitrate = "2000k"
-		bufsize = "4000k"
-		queueSize = "64"
-	}
-
 	for {
-		log.Printf("[stream] Disparando processo FFmpeg interno (Low-RAM: %s, queue: %s)...", bitrate, queueSize)
-
-		cmd := exec.Command("ffmpeg",
-			"-hide_banner", "-loglevel", "warning",
-			"-thread_queue_size", queueSize,
-			"-f", "rawvideo",
-			"-pix_fmt", "rgba",
-			"-video_size", fmt.Sprintf("%dx%d", frameW, frameH),
-			"-framerate", fmt.Sprintf("%d", fps),
-			"-i", "pipe:0",
-			"-thread_queue_size", queueSize,
-			"-probesize", "32k",
-			"-analyzeduration", "0",
-			"-reconnect", "1",
-			"-reconnect_at_eof", "1",
-			"-reconnect_streamed", "1",
-			"-reconnect_delay_max", "5",
-			"-i", radioURL,
-			"-c:v", "libx264",
-			"-preset", "ultrafast",
-			"-tune", "zerolatency",
-			"-threads", "1",
-			"-b:v", bitrate,
-			"-maxrate", bitrate,
-			"-bufsize", bufsize,
-			"-pix_fmt", "yuv420p",
-			"-g", fmt.Sprintf("%d", fps*2),
-			"-keyint_min", fmt.Sprintf("%d", fps),
-			"-sc_threshold", "0",
-			"-c:a", "aac",
-			"-b:a", "128k",
-			"-ar", "44100",
-			"-af", "aresample=async=1000,volume=0.8",
-			"-flags", "+global_header",
-			"-f", "tee",
-			"-map", "0:v",
-			"-map", "1:a",
-			teeDest,
-		)
+		log.Print("[stream] Disparando processo FFmpeg interno (fila de vídeo: 2 frames)...")
+		cmd := newFFmpegCommand(fps, teeDest, radioURL)
 
 		cmd.Stderr = os.Stderr
 		stdin, err := cmd.StdinPipe()
@@ -1555,6 +1588,7 @@ func startLiveStreamLoop(fps int, kickURL, twitchURL, ytURL, radioURL string, te
 		}
 
 		if err := cmd.Start(); err != nil {
+			_ = stdin.Close()
 			log.Printf("[stream] Erro ao iniciar subprocesso ffmpeg: %v", err)
 			time.Sleep(3 * time.Second)
 			continue
@@ -1582,6 +1616,10 @@ func main() {
 	ytURL := flag.String("yt", getEnv("YOUTUBE_INGEST", defaultYTIngest), "URL RTMP YouTube")
 	radioURL := flag.String("radio", getEnv("RADIO_URL", defaultRadioURL), "Stream URL Audio Lo-Fi")
 	flag.Parse()
+	if *fps <= 0 || *fps > 120 {
+		fmt.Fprintln(os.Stderr, "[hud] fps deve estar entre 1 e 120")
+		os.Exit(1)
+	}
 
 	if *resFlag == "1080p" {
 		frameW = 1920
@@ -1599,13 +1637,13 @@ func main() {
 
 	if *pngOut != "" {
 		fetchTelemetry(url, localPath)
-		dc := gg.NewContext(frameW, frameH)
+		renderer := newFrameRenderer()
 		dataMu.RLock()
 		t := currentTelem
 		dataMu.RUnlock()
-		drawStaticBackground(dc, t)
-		drawDynamicOverlays(dc, 0)
-		if err := writePNG(*pngOut, dc.Image()); err != nil {
+		drawStaticBackground(renderer.dc, t)
+		drawDynamicOverlays(renderer.dc, renderer.marquee, 0)
+		if err := writePNG(*pngOut, renderer.dc.Image()); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}

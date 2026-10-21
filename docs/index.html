@@ -636,7 +636,13 @@
     const TELEMETRY_URL = 'https://kbelludoo.github.io/bot-template-go/status.json';
     async function updateTelemetry() {
       try {
-        const res = await fetch(TELEMETRY_URL + '?t=' + Date.now());
+        const res = await fetch(TELEMETRY_URL + '?t=' + Date.now() + '&v=' + Math.random(), {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
+          }
+        });
         if (!res.ok) return;
         const data = await res.json();
         renderTelemetry(data);
