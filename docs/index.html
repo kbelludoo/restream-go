@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>⚡ Bot Hub — VPS Command Center & Game Bot Starter Kit (Go Engine)</title>
+  <title>⚡ Bot Hub — VPS Command Center & Game/Stream Bot Kit (Go Engine)</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -145,75 +145,6 @@
       font-size: 0.72rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; white-space: nowrap;
     }
     .stream-ticker-track { display: flex; gap: 28px; white-space: nowrap; font-size: 0.8rem; color: var(--text-muted); }
-
-    /* Live Stream Unified Section */
-    .live-stream-panel {
-      background: var(--card-bg); backdrop-filter: blur(16px); border-radius: 20px;
-      border: 1px solid rgba(0, 240, 255, 0.35); border-top: 4px solid var(--accent);
-      padding: 24px; margin-bottom: 28px; box-shadow: 0 10px 40px -10px rgba(0, 240, 255, 0.2);
-    }
-    .stream-panel-header {
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;
-      margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .stream-title-group { display: flex; align-items: center; gap: 14px; }
-    .stream-icon {
-      width: 44px; height: 44px; border-radius: 12px; background: rgba(0, 240, 255, 0.15);
-      border: 1px solid var(--accent); display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem;
-    }
-    .stream-title-group h2 { font-size: 1.25rem; font-weight: 800; color: #fff; }
-    .stream-title-group p { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
-    .live-status-pill {
-      font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 700;
-      padding: 6px 14px; border-radius: 999px; background: rgba(16, 185, 129, 0.15);
-      border: 1px solid var(--green); color: var(--green); display: inline-flex; align-items: center; gap: 6px;
-    }
-    .stream-content-grid {
-      display: grid; grid-template-columns: 2fr 1fr; gap: 20px;
-    }
-    @media (max-width: 900px) {
-      .stream-content-grid { grid-template-columns: 1fr; }
-    }
-    .player-tabs { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-    .player-tab {
-      padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.4); color: var(--text-muted);
-      transition: all 0.2s; font-family: 'JetBrains Mono', monospace;
-    }
-    .player-tab.active {
-      background: rgba(0, 240, 255, 0.18); border-color: var(--accent); color: var(--accent);
-    }
-    .player-frame-box {
-      width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 12px;
-      overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); position: relative;
-    }
-    .player-view { display: none; width: 100%; height: 100%; }
-    .player-view.active { display: block; }
-    .player-view iframe { width: 100%; height: 100%; border: none; }
-    .player-view img { width: 100%; height: 100%; object-fit: contain; background: #07090e; }
-    .stream-watch-buttons { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
-    .btn-watch {
-      flex: 1; min-width: 130px; text-align: center; padding: 10px 14px; border-radius: 10px;
-      font-size: 0.78rem; font-weight: 700; text-decoration: none; transition: transform 0.15s ease, filter 0.2s ease;
-      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    }
-    .btn-watch:hover { transform: translateY(-2px); filter: brightness(1.15); }
-    .btn-watch.kick { background: rgba(83, 252, 24, 0.15); border: 1px solid #53fc18; color: #53fc18; }
-    .btn-watch.twitch { background: rgba(168, 85, 247, 0.15); border: 1px solid #a855f7; color: #c084fc; }
-    .btn-watch.youtube { background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444; }
-    .stream-specs-card {
-      background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 10px;
-    }
-    .specs-title {
-      font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
-      color: var(--accent); margin-bottom: 4px; padding-bottom: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    .spec-row {
-      display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;
-      color: var(--text-muted); font-family: 'JetBrains Mono', monospace;
-    }
   </style>
 </head>
 <body>
@@ -222,14 +153,11 @@
       <div class="header-left">
         <div class="logo-badge">⚡</div>
         <div class="header-title">
-          <h1>VPS Bot Command Center & Live Stream</h1>
-          <p><span>🌐 Cluster OCI Always-Free</span> • <span>🚀 Go 1.27 Native Engine</span> • <span>📡 Restream Multicast</span></p>
+          <h1>VPS Command Center</h1>
+          <p><span>🌐 Cluster OCI Always-Free</span> • <span>🚀 Go 1.27 Native Engine</span></p>
         </div>
       </div>
       <div class="header-right">
-        <a href="#liveStreamSection" class="btn-link" style="background: rgba(0, 240, 255, 0.12); border-color: rgba(0, 240, 255, 0.4); color: #00f0ff; display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;">
-          <span>📡</span> Live Stream
-        </a>
         <div class="live-badge">
           <span class="pulse-dot"></span>
           <span>LIVE TELEMETRY</span>
@@ -239,9 +167,9 @@
 
     <div class="vps-metrics-grid">
       <div class="vps-card">
-        <div class="vps-label">Bots em Operação</div>
-        <div class="vps-val" id="botsCountVal" style="color: var(--accent);">11 / 14</div>
-        <div class="vps-sub">Bots conectados 24/7 na VPS</div>
+        <div class="vps-label">Serviços em Operação</div>
+        <div class="vps-val" id="botsCountVal" style="color: var(--accent);">12 / 14</div>
+        <div class="vps-sub">Bots & Miners conectados 24/7 na VPS</div>
       </div>
       <div class="vps-card">
         <div class="vps-label">Memória RAM VPS</div>
@@ -252,97 +180,7 @@
       <div class="vps-card">
         <div class="vps-label">Uptime & Conexão</div>
         <div class="vps-val" style="color: var(--gold); font-size: 1.15rem;">OCI Ashburn</div>
-        <div class="vps-sub" id="lastUpdatedSub">há 4m24s</div>
-      </div>
-      <div class="vps-card">
-        <div class="vps-label">Restream Multicast (Go)</div>
-        <div class="vps-val" id="streamRamVal" style="color: #00f0ff;">~24 MB RAM</div>
-        <div class="vps-sub">720p10 • Kick + Twitch + YouTube</div>
-      </div>
-    </div>
-
-    <!-- Live Stream Unified Section -->
-    <div class="live-stream-panel" id="liveStreamSection">
-      <div class="stream-panel-header">
-        <div class="stream-title-group">
-          <div class="stream-icon">📡</div>
-          <div>
-            <h2>Restream Go — Transmissão Multicast 24/7</h2>
-            <p>Transmissão simultânea de telemetria em Go puro para Kick, Twitch e YouTube • Áudio: Nightwave Plaza Lo-Fi</p>
-          </div>
-        </div>
-        <div class="stream-header-actions">
-          <span class="live-status-pill">
-            <span class="pulse-dot"></span>
-            TRANSMITINDO AO VIVO
-          </span>
-        </div>
-      </div>
-
-      <div class="stream-content-grid">
-        <!-- Left: Player & Preview -->
-        <div class="stream-player-container">
-          <div class="player-tabs">
-            <button class="player-tab active" id="tab-twitch" onclick="switchPlayerTab('twitch')">🟣 Twitch Player</button>
-            <button class="player-tab" id="tab-youtube" onclick="switchPlayerTab('youtube')">🔴 YouTube Player</button>
-            <button class="player-tab" id="tab-preview" onclick="switchPlayerTab('preview')">🖼️ Frame Snapshot (HUD)</button>
-          </div>
-          
-          <div class="player-frame-box">
-            <div id="twitchPlayerWrap" class="player-view active">
-              <iframe id="twitchIframe" src="https://player.twitch.tv/?channel=kbelludoo&parent=kbelludoo.github.io&parent=localhost" allowfullscreen></iframe>
-            </div>
-            <div id="youtubePlayerWrap" class="player-view">
-              <iframe id="youtubeIframe" src="https://www.youtube.com/embed/live_stream?channel=5fst-9b20-k652-g8mg-10p0" allowfullscreen></iframe>
-            </div>
-            <div id="previewPlayerWrap" class="player-view">
-              <img id="streamPreviewImg" src="preview.png" alt="Snapshot da Stream HUD Go" />
-            </div>
-          </div>
-
-          <div class="stream-watch-buttons">
-            <a href="https://kick.com" target="_blank" rel="noreferrer" class="btn-watch kick">⚡ Assistir no Kick</a>
-            <a href="https://twitch.tv/kbelludoo" target="_blank" rel="noreferrer" class="btn-watch twitch">🟣 Assistir na Twitch</a>
-            <a href="https://youtube.com" target="_blank" rel="noreferrer" class="btn-watch youtube">🔴 Assistir no YouTube</a>
-          </div>
-        </div>
-
-        <!-- Right: Stream Info & Specs -->
-        <div class="stream-specs-card">
-          <div class="specs-title">⚡ Especificações da Transmissão</div>
-          <div class="spec-row">
-            <span>Motor de Renderização</span>
-            <strong style="color: #00f0ff;">Go 1.27 Nativo (2D Framebuffer)</strong>
-          </div>
-          <div class="spec-row">
-            <span>Consumo do Processo</span>
-            <strong style="color: #10b981;">~24 MB RAM (Zero Chrome)</strong>
-          </div>
-          <div class="spec-row">
-            <span>Resolução & Taxa</span>
-            <strong>1280x720 (720p) @ 10 FPS</strong>
-          </div>
-          <div class="spec-row">
-            <span>Bitrate & Codec</span>
-            <strong>1200 kbps CBR • H.264 ultrafast</strong>
-          </div>
-          <div class="spec-row">
-            <span>Canal de Áudio</span>
-            <strong style="color: #c084fc;">Nightwave Plaza Radio Lo-Fi (AAC)</strong>
-          </div>
-          <div class="spec-row">
-            <span>Fan-out Simultâneo</span>
-            <strong>Tee Muxer: Kick + Twitch + YouTube</strong>
-          </div>
-          <div class="spec-row">
-            <span>Status do Pipeline</span>
-            <strong style="color: #10b981;">🟢 Ativo e Estável 24/7</strong>
-          </div>
-          <div class="spec-row">
-            <span>Telemetria HUD</span>
-            <strong style="color: var(--gold);">Sincronizada em Tempo Real</strong>
-          </div>
-        </div>
+        <div class="vps-sub" id="lastUpdatedSub">há 7m32s</div>
       </div>
     </div>
 
@@ -356,74 +194,94 @@
               <h3>⚔️ Huntera Idle</h3>
               <span class="bot-port">PORTA 3000 • GO NATIVE</span>
             </div>
-            <span class="badge-status" id="badge-huntera">4/4 ATIVO</span>
+            <span class="badge-status" id="badge-huntera">4/4 ATIVAS</span>
           </div>
 
           <div class="acc-list" id="acclist-huntera">
             
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>⚔️  (Nv. 125)</span>
                   <span style="color: #ef4444;"></span>
                 </div>
                 
+                
                 <div class="stat-row">
                   <span>❤️ HP</span>
                   <span style="color: #4ade80;">1940 / 1940</span>
                 </div>
+                
+                
                 <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 103.9k gp</span>
+                  <span style="color: #facc15; font-weight: 800;">💰 105.1k gp</span>
                   <span style="color: #38bdf8; font-weight: 700;">⚔️ 0 kills</span>
                 </div>
+                
               </div>
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>⚔️  (Nv. 92)</span>
                   <span style="color: #ef4444;"></span>
                 </div>
                 
+                
                 <div class="stat-row">
                   <span>❤️ HP</span>
                   <span style="color: #4ade80;">1025 / 1025</span>
                 </div>
+                
+                
                 <div class="stat-row">
                   <span style="color: #facc15; font-weight: 800;">💰 40 gp</span>
                   <span style="color: #38bdf8; font-weight: 700;">⚔️ 0 kills</span>
                 </div>
+                
               </div>
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>⚔️  (Nv. 100)</span>
                   <span style="color: #ef4444;"></span>
                 </div>
                 
+                
                 <div class="stat-row">
                   <span>❤️ HP</span>
                   <span style="color: #4ade80;">532 / 645</span>
                 </div>
+                
+                
                 <div class="stat-row">
                   <span style="color: #facc15; font-weight: 800;">💰 166.0k gp</span>
                   <span style="color: #38bdf8; font-weight: 700;">⚔️ 0 kills</span>
                 </div>
+                
               </div>
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>⚔️  (Nv. 103)</span>
                   <span style="color: #ef4444;"></span>
                 </div>
                 
+                
                 <div class="stat-row">
                   <span>❤️ HP</span>
                   <span style="color: #4ade80;">648 / 660</span>
                 </div>
+                
+                
                 <div class="stat-row">
                   <span style="color: #facc15; font-weight: 800;">💰 21.7k gp</span>
                   <span style="color: #38bdf8; font-weight: 700;">⚔️ 0 kills</span>
                 </div>
+                
               </div>
               
             
@@ -431,7 +289,7 @@
         </div>
 
         <div class="bot-footer">
-          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-huntera">💰 291.6k gp • RAM: 0.0 MB</span>
+          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-huntera">💰 292.8k gp</span>
           <a href="https://kbelludoo.github.io/huntera-bot/" target="_blank" class="btn-link">Abrir Dashboard ↗</a>
         </div>
       </div>
@@ -451,19 +309,24 @@
             
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>🛡️ Conta #1 (Nv. 60)</span>
                   <span style="color: #00f0ff;">KNIGHT</span>
                 </div>
                 
+                
                 <div class="stat-row">
                   <span>❤️ HP</span>
                   <span style="color: #4ade80;">996 / 1016</span>
                 </div>
+                
+                
                 <div class="stat-row">
                   <span style="color: #facc15; font-weight: 800;">💰 419.0k gp</span>
                   <span style="color: #38bdf8; font-weight: 700;">⚔️ 0 kills</span>
                 </div>
+                
               </div>
               
             
@@ -484,58 +347,73 @@
               <h3>⚡ Sigma Idle Multi-Bot</h3>
               <span class="bot-port">PORTA 3002 • GO NATIVE</span>
             </div>
-            <span class="badge-status" id="badge-sigma">3/3 ATIVO</span>
+            <span class="badge-status" id="badge-sigma">3/3 ATIVAS</span>
           </div>
 
           <div class="acc-list" id="acclist-sigma">
             
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>⚡  (Nv. 100)</span>
                   <span style="color: #facc15;"></span>
                 </div>
                 
+                
                 <div class="stat-row">
                   <span>❤️ HP</span>
                   <span style="color: #4ade80;">1020 / 1020</span>
                 </div>
+                
+                
                 <div class="stat-row">
                   <span style="color: #facc15; font-weight: 800;">💰 2.92kk gp</span>
                   <span style="color: #38bdf8; font-weight: 700;">⚔️ 0 kills</span>
                 </div>
+                
               </div>
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>⚡  (Nv. 200)</span>
                   <span style="color: #facc15;"></span>
                 </div>
                 
+                
                 <div class="stat-row">
                   <span>❤️ HP</span>
                   <span style="color: #4ade80;">2020 / 2020</span>
                 </div>
+                
+                
                 <div class="stat-row">
                   <span style="color: #facc15; font-weight: 800;">💰 22.34kk gp</span>
                   <span style="color: #38bdf8; font-weight: 700;">⚔️ 244 kills</span>
                 </div>
+                
               </div>
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>⚡  (Nv. 216)</span>
                   <span style="color: #facc15;"></span>
                 </div>
                 
+                
                 <div class="stat-row">
                   <span>❤️ HP</span>
                   <span style="color: #4ade80;">2180 / 2180</span>
                 </div>
+                
+                
                 <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 42.21kk gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 247169 kills</span>
+                  <span style="color: #facc15; font-weight: 800;">💰 42.24kk gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 247502 kills</span>
                 </div>
+                
               </div>
               
             
@@ -543,7 +421,7 @@
         </div>
 
         <div class="bot-footer">
-          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-sigma">💰 67.46kk gp • RAM: 0.0 MB</span>
+          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-sigma">💰 67.49kk gp • RAM: 1.9 MB</span>
           <a href="https://kbelludoo.github.io/sigma-bot/" target="_blank" class="btn-link">Abrir Dashboard ↗</a>
         </div>
       </div>
@@ -556,13 +434,14 @@
               <h3>🌲 Leveling Idle 2D</h3>
               <span class="bot-port">PORTA 3003 • GO NATIVE</span>
             </div>
-            <span class="badge-status" id="badge-leveling">HUNTING</span>
+            <span class="badge-status" id="badge-leveling">4/4 ATIVAS</span>
           </div>
 
           <div class="acc-list" id="acclist-leveling">
             
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>🌲 Party #1 (Nv. 25)</span>
                   <span style="color: #10b981;"></span>
@@ -572,17 +451,22 @@
                   <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Castelo dos Demônios (Orc Jovem Nv 25)</span>
                 </div>
                 
+                
                 <div class="stat-row">
                   <span>❤️ HP</span>
                   <span style="color: #4ade80;">825 / 825</span>
                 </div>
+                
+                
                 <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 839.3k gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 2168208 kills</span>
+                  <span style="color: #facc15; font-weight: 800;">💰 839.6k gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 2173873 kills</span>
                 </div>
+                
               </div>
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>🌲 Party #2 (Nv. 36)</span>
                   <span style="color: #10b981;"></span>
@@ -592,17 +476,22 @@
                   <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Castelo dos Demônios (Orc Jovem Nv 25)</span>
                 </div>
                 
+                
                 <div class="stat-row">
                   <span>❤️ HP</span>
                   <span style="color: #4ade80;">1100 / 1100</span>
                 </div>
+                
+                
                 <div class="stat-row">
                   <span style="color: #facc15; font-weight: 800;">💰 1.49kk gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 2235546 kills</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 2241260 kills</span>
                 </div>
+                
               </div>
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>🌲 Party #3 (Nv. 32)</span>
                   <span style="color: #10b981;"></span>
@@ -612,17 +501,22 @@
                   <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Castelo dos Demônios (Orc Jovem Nv 25)</span>
                 </div>
                 
+                
                 <div class="stat-row">
                   <span>❤️ HP</span>
                   <span style="color: #4ade80;">1000 / 1000</span>
                 </div>
+                
+                
                 <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 1.07kk gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 2194605 kills</span>
+                  <span style="color: #facc15; font-weight: 800;">💰 1.08kk gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 2200147 kills</span>
                 </div>
+                
               </div>
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>🌲 Party #4 (Nv. 35)</span>
                   <span style="color: #10b981;"></span>
@@ -632,14 +526,18 @@
                   <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Castelo dos Demônios (Orc Jovem Nv 25)</span>
                 </div>
                 
+                
                 <div class="stat-row">
                   <span>❤️ HP</span>
                   <span style="color: #4ade80;">1075 / 1075</span>
                 </div>
+                
+                
                 <div class="stat-row">
                   <span style="color: #facc15; font-weight: 800;">💰 1.51kk gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 2235131 kills</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 2240889 kills</span>
                 </div>
+                
               </div>
               
             
@@ -660,18 +558,118 @@
               <h3>🔮 Baiak Idle Multi-Bot</h3>
               <span class="bot-port">PORTA 8090 • GO NATIVE</span>
             </div>
-            <span class="badge-status" id="badge-baiak">OFFLINE</span>
+            <span class="badge-status" id="badge-baiak">4/4 ATIVAS</span>
           </div>
 
           <div class="acc-list" id="acclist-baiak">
             
-              <div style="color: var(--text-dim); font-size: 0.8rem;">Carregando telemetria...</div>
+              
+              <div class="acc-item">
+                
+                <div class="acc-item-header">
+                  <span>🔮 Conta 1 (Nv. 373)</span>
+                  <span style="color: #c084fc;">paladin</span>
+                </div>
+                
+                <div class="stat-row" style="background: rgba(192, 132, 252, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
+                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Vexclaw</span>
+                </div>
+                
+                
+                
+                <div class="stat-row">
+                  <span>⚡ Stamina</span>
+                  <span style="color: #38bdf8; font-weight: 600;">36h 29m (87%)</span>
+                </div>
+                
+                <div class="stat-row">
+                  <span style="color: #facc15; font-weight: 800;">💰 106.60kk gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 6355 kills</span>
+                </div>
+                
+              </div>
+              
+              <div class="acc-item">
+                
+                <div class="acc-item-header">
+                  <span>🔮 Conta 2 (Nv. 260)</span>
+                  <span style="color: #c084fc;">knight</span>
+                </div>
+                
+                <div class="stat-row" style="background: rgba(192, 132, 252, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
+                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Stone Refiner</span>
+                </div>
+                
+                
+                
+                <div class="stat-row">
+                  <span>⚡ Stamina</span>
+                  <span style="color: #38bdf8; font-weight: 600;">23h 10m (55%)</span>
+                </div>
+                
+                <div class="stat-row">
+                  <span style="color: #facc15; font-weight: 800;">💰 191.44kk gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 39219 kills</span>
+                </div>
+                
+              </div>
+              
+              <div class="acc-item">
+                
+                <div class="acc-item-header">
+                  <span>🔮 Conta 3 (Nv. 495)</span>
+                  <span style="color: #c084fc;">knight</span>
+                </div>
+                
+                <div class="stat-row" style="background: rgba(192, 132, 252, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
+                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Vexclaw</span>
+                </div>
+                
+                
+                
+                <div class="stat-row">
+                  <span>⚡ Stamina</span>
+                  <span style="color: #38bdf8; font-weight: 600;">35h 06m (84%)</span>
+                </div>
+                
+                <div class="stat-row">
+                  <span style="color: #facc15; font-weight: 800;">💰 633 gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 7149 kills</span>
+                </div>
+                
+              </div>
+              
+              <div class="acc-item">
+                
+                <div class="acc-item-header">
+                  <span>🔮 Conta 4 (Nv. 490)</span>
+                  <span style="color: #c084fc;">druid</span>
+                </div>
+                
+                <div class="stat-row" style="background: rgba(192, 132, 252, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
+                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Vexclaw</span>
+                </div>
+                
+                
+                
+                <div class="stat-row">
+                  <span>⚡ Stamina</span>
+                  <span style="color: #38bdf8; font-weight: 600;">33h 20m (79%)</span>
+                </div>
+                
+                <div class="stat-row">
+                  <span style="color: #facc15; font-weight: 800;">💰 205.51kk gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 7127 kills</span>
+                </div>
+                
+              </div>
+              
             
           </div>
         </div>
 
         <div class="bot-footer">
-          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-baiak">💰 0 gp • RAM: 0.0 MB</span>
+          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-baiak">💰 503.55kk gp</span>
           <a href="https://kbelludoo.github.io/baiak-idle-bot/" target="_blank" class="btn-link">Abrir Dashboard ↗</a>
         </div>
       </div>
@@ -684,13 +682,14 @@
               <h3>⚡ PokeLegacy Online</h3>
               <span class="bot-port">PORTA 3005 • GO NATIVE</span>
             </div>
-            <span class="badge-status" id="badge-pokelegacy">HUNTING</span>
+            <span class="badge-status" id="badge-pokelegacy">5/5 ATIVAS</span>
           </div>
 
           <div class="acc-list" id="acclist-pokelegacy">
             
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>⚡ Treinador #1 (Nv. 120)</span>
                   <span style="color: #fbbf24;">Treinador</span>
@@ -700,94 +699,118 @@
                   <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Enseada de Dewford</span>
                 </div>
                 
+                
                 <div class="stat-row">
                   <span>❤️ HP</span>
-                  <span style="color: #4ade80;">142 / 150</span>
+                  <span style="color: #4ade80;">144 / 150</span>
                 </div>
+                
+                
                 <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 1.41kk gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 16533 kills</span>
+                  <span style="color: #facc15; font-weight: 800;">💰 1.42kk gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 16573 kills</span>
                 </div>
+                
               </div>
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
-                  <span>⚡ Treinador #2 (Nv. 102)</span>
+                  <span>⚡ Treinador #2 (Nv. 103)</span>
                   <span style="color: #fbbf24;">Treinador</span>
                 </div>
                 
                 <div class="stat-row" style="background: rgba(251, 191, 36, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
-                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Planície de Johto</span>
+                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Mata dos Insetos</span>
                 </div>
+                
                 
                 <div class="stat-row">
                   <span>❤️ HP</span>
-                  <span style="color: #4ade80;">5572 / 5577</span>
+                  <span style="color: #4ade80;">5570 / 5577</span>
                 </div>
+                
+                
                 <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 33.8k gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 7202 kills</span>
+                  <span style="color: #facc15; font-weight: 800;">💰 69.6k gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 7358 kills</span>
                 </div>
+                
               </div>
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>⚡ Treinador #3 (Nv. 112)</span>
                   <span style="color: #fbbf24;">Treinador</span>
                 </div>
                 
                 <div class="stat-row" style="background: rgba(251, 191, 36, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
-                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Campos de Littleroot</span>
+                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Encosta Vulcânica</span>
                 </div>
+                
                 
                 <div class="stat-row">
                   <span>❤️ HP</span>
-                  <span style="color: #4ade80;">6083 / 6087</span>
+                  <span style="color: #4ade80;">6084 / 6087</span>
                 </div>
+                
+                
                 <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 7.5k gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 11186 kills</span>
+                  <span style="color: #facc15; font-weight: 800;">💰 9.3k gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 11265 kills</span>
                 </div>
+                
               </div>
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
-                  <span>⚡ Treinador #4 (Nv. 104)</span>
+                  <span>⚡ Treinador #4 (Nv. 105)</span>
                   <span style="color: #fbbf24;">Treinador</span>
                 </div>
                 
                 <div class="stat-row" style="background: rgba(251, 191, 36, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
-                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Campina dos Brotos</span>
+                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Pedreira Fóssil</span>
                 </div>
+                
                 
                 <div class="stat-row">
                   <span>❤️ HP</span>
-                  <span style="color: #4ade80;">5732 / 5737</span>
+                  <span style="color: #4ade80;">5728 / 5737</span>
                 </div>
+                
+                
                 <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 34.3k gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 4943 kills</span>
+                  <span style="color: #facc15; font-weight: 800;">💰 70.7k gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 5099 kills</span>
                 </div>
+                
               </div>
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>⚡ Treinador #5 (Nv. 111)</span>
                   <span style="color: #fbbf24;">Treinador</span>
                 </div>
                 
                 <div class="stat-row" style="background: rgba(251, 191, 36, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
-                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Campo Nevado</span>
+                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Charco</span>
                 </div>
+                
                 
                 <div class="stat-row">
                   <span>❤️ HP</span>
-                  <span style="color: #4ade80;">423 / 429</span>
+                  <span style="color: #4ade80;">427 / 429</span>
                 </div>
+                
+                
                 <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 37.4k gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 7315 kills</span>
+                  <span style="color: #facc15; font-weight: 800;">💰 76.0k gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 7472 kills</span>
                 </div>
+                
               </div>
               
             
@@ -795,7 +818,7 @@
         </div>
 
         <div class="bot-footer">
-          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-pokelegacy">💰 1.52kk gp • RAM: 13.6 MB</span>
+          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-pokelegacy">💰 1.64kk gp • RAM: 13.6 MB</span>
           <a href="https://kbelludoo.github.io/pokelegacy-bot/" target="_blank" class="btn-link">Abrir Dashboard ↗</a>
         </div>
       </div>
@@ -815,6 +838,7 @@
             
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>🎮 Treinador #1 (Nv. 61)</span>
                   <span style="color: #38bdf8;">Bulbasaur (Nv. 61)</span>
@@ -824,14 +848,18 @@
                   <span style="font-weight: 700; font-size: 0.72rem;">🗺️ geodude</span>
                 </div>
                 
+                
                 <div class="stat-row">
                   <span>❤️ HP</span>
-                  <span style="color: #4ade80;">526 / 1260</span>
+                  <span style="color: #4ade80;">503 / 1260</span>
                 </div>
+                
+                
                 <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 18.05kk gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 1936 kills</span>
+                  <span style="color: #facc15; font-weight: 800;">💰 18.06kk gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 2115 kills</span>
                 </div>
+                
               </div>
               
             
@@ -839,7 +867,7 @@
         </div>
 
         <div class="bot-footer">
-          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-pokeidle">💰 18.05kk gp • RAM: 17.1 MB</span>
+          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-pokeidle">💰 18.06kk gp • RAM: 17.1 MB</span>
           <a href="https://kbelludoo.github.io/pokeidle-go/" target="_blank" class="btn-link">Abrir Dashboard ↗</a>
         </div>
       </div>
@@ -859,6 +887,7 @@
             
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>🌍 Treinador #1 (Nv. 88)</span>
                   <span style="color: #34d399;"></span>
@@ -868,14 +897,18 @@
                   <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Magneton</span>
                 </div>
                 
+                
                 <div class="stat-row">
                   <span>❤️ HP</span>
                   <span style="color: #4ade80;">240 / 240</span>
                 </div>
+                
+                
                 <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 36.8k gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 16 kills</span>
+                  <span style="color: #facc15; font-weight: 800;">💰 1.2k gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 19 kills</span>
                 </div>
+                
               </div>
               
             
@@ -883,7 +916,7 @@
         </div>
 
         <div class="bot-footer">
-          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-pokeidleworld">💰 36.8k gp • RAM: 17.6 MB</span>
+          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-pokeidleworld">💰 1.2k gp • RAM: 17.6 MB</span>
           <a href="https://kbelludoo.github.io/pokeidleworld-bot/" target="_blank" class="btn-link">Abrir Dashboard ↗</a>
         </div>
       </div>
@@ -893,29 +926,31 @@
         <div>
           <div class="bot-header">
             <div class="bot-name-group">
-              <h3>🟩 Kick Miner Go</h3>
-              <span class="bot-port">PORTA 3009 • GO NATIVE</span>
+              <h3>📺 Kick Miner Go</h3>
+              <span class="bot-port">PORTA 3009 • STREAM HARVESTER</span>
             </div>
-            <span class="badge-status" id="badge-kickminer">1/1 ATIVO</span>
+            <span class="badge-status" id="badge-kickminer">12 AO VIVO</span>
           </div>
 
           <div class="acc-list" id="acclist-kickminer">
             
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
-                  <span>🟩 miner_1 (Nv. 0)</span>
-                  <span style="color: #53fc18;"></span>
+                  <span>📺 Conta Kick #1</span>
+                  <span style="color: #53fc18; font-size: 0.72rem; font-weight: 700;">STREAM VIEWER</span>
+                </div>
+                
+                <div class="stat-row" style="background: rgba(83, 252, 24, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
+                  <span style="font-weight: 700; font-size: 0.72rem;">📡 Ao vivo: anonimo, bkinho, classybeef (&#43;12)</span>
                 </div>
                 
                 <div class="stat-row">
-                  <span>❤️ HP</span>
-                  <span style="color: #4ade80;">0 / 0</span>
+                  <span style="color: #facc15; font-weight: 800;">⭐ 37.1k pontos</span>
+                  <span style="color: #38bdf8; font-weight: 700;">🔴 12 canais ao vivo</span>
                 </div>
-                <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 0 gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 0 kills</span>
-                </div>
+                
               </div>
               
             
@@ -923,7 +958,7 @@
         </div>
 
         <div class="bot-footer">
-          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-kickminer">💰 0 gp • RAM: 0.0 MB</span>
+          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-kickminer">⭐ 37.1k pontos • RAM: 2.0 MB</span>
           <a href="https://kbelludoo.github.io/kick-miner-go/" target="_blank" class="btn-link">Abrir Dashboard ↗</a>
         </div>
       </div>
@@ -934,20 +969,38 @@
           <div class="bot-header">
             <div class="bot-name-group">
               <h3>🟣 Twitch Miner Go</h3>
-              <span class="bot-port">PORTA 3010 • GO NATIVE</span>
+              <span class="bot-port">PORTA 3010 • STREAM HARVESTER</span>
             </div>
-            <span class="badge-status" id="badge-twitchminer">OFFLINE</span>
+            <span class="badge-status" id="badge-twitchminer">1 AO VIVO</span>
           </div>
 
           <div class="acc-list" id="acclist-twitchminer">
             
-              <div style="color: var(--text-dim); font-size: 0.8rem;">Carregando telemetria...</div>
+              
+              <div class="acc-item">
+                
+                <div class="acc-item-header">
+                  <span>🟣 Minerador #1</span>
+                  <span style="color: #a855f7; font-size: 0.72rem; font-weight: 700;">STREAM VIEWER</span>
+                </div>
+                
+                <div class="stat-row" style="background: rgba(168, 85, 247, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
+                  <span style="font-weight: 700; font-size: 0.72rem;">📡 Assistindo Gaules</span>
+                </div>
+                
+                <div class="stat-row">
+                  <span style="color: #facc15; font-weight: 800;">⭐ 1.1k pontos</span>
+                  <span style="color: #38bdf8; font-weight: 700;">🔴 1 canais ao vivo</span>
+                </div>
+                
+              </div>
+              
             
           </div>
         </div>
 
         <div class="bot-footer">
-          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-twitchminer">💰 0 gp • RAM: 0.0 MB</span>
+          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-twitchminer">⭐ 1.1k pontos</span>
           <a href="https://kbelludoo.github.io/twitch-miner-go/" target="_blank" class="btn-link">Abrir Dashboard ↗</a>
         </div>
       </div>
@@ -984,30 +1037,35 @@
               <h3>🌾 Farm Ricochet Bot</h3>
               <span class="bot-port">PORTA 3013 • GO NATIVE</span>
             </div>
-            <span class="badge-status" id="badge-farmricochet">JOGANDO FASE 35</span>
+            <span class="badge-status" id="badge-farmricochet">JOGANDO FASE 36</span>
           </div>
 
           <div class="acc-list" id="acclist-farmricochet">
             
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
-                  <span>🌾 anonimo (Nv. 35)</span>
+                  <span>🌾 anonimo (Nv. 36)</span>
                   <span style="color: #9bd26a;">knight</span>
                 </div>
                 
                 <div class="stat-row" style="background: rgba(155, 210, 106, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
-                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Fase 35: Ato 2 — Resistência · Outono 4/5</span>
+                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ Fase 36: Ato 2 — Resistência · Outono 5/5</span>
                 </div>
+                
                 
                 <div class="stat-row">
                   <span>❤️ HP</span>
                   <span style="color: #4ade80;">466 / 466</span>
                 </div>
+                
+                
                 <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 11.6k gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 385 kills</span>
+                  <span style="color: #facc15; font-weight: 800;">💰 12.5k gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 400 kills</span>
                 </div>
+                
               </div>
               
             
@@ -1015,7 +1073,7 @@
         </div>
 
         <div class="bot-footer">
-          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-farmricochet">💰 11.6k gp • RAM: 13.3 MB</span>
+          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-farmricochet">💰 12.5k gp • RAM: 13.3 MB</span>
           <a href="https://kbelludoo.github.io/farmricochet-bot/" target="_blank" class="btn-link">Abrir Dashboard ↗</a>
         </div>
       </div>
@@ -1028,70 +1086,85 @@
               <h3>🔥 PokeTrue Multi-Bot</h3>
               <span class="bot-port">PORTA 3014 • GO NATIVE</span>
             </div>
-            <span class="badge-status" id="badge-poketrue">HUNTING</span>
+            <span class="badge-status" id="badge-poketrue">3/3 ATIVAS</span>
           </div>
 
           <div class="acc-list" id="acclist-poketrue">
             
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>🔥 anonimo (Nv. 105)</span>
                   <span style="color: #ef4444;">Graveler</span>
                 </div>
                 
                 <div class="stat-row" style="background: rgba(239, 68, 68, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
-                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ celeiro</span>
+                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ lagoa_de_prata</span>
                 </div>
+                
                 
                 <div class="stat-row">
                   <span>❤️ HP</span>
                   <span style="color: #4ade80;">402 / 100</span>
                 </div>
+                
+                
                 <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 615.8k gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 12074 kills</span>
+                  <span style="color: #facc15; font-weight: 800;">💰 617.5k gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 12092 kills</span>
                 </div>
+                
               </div>
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>🔥 anonimo (Nv. 93)</span>
-                  <span style="color: #ef4444;">Paras</span>
+                  <span style="color: #ef4444;">Pidgeotto</span>
                 </div>
                 
                 <div class="stat-row" style="background: rgba(239, 68, 68, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
-                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ caverna_do_fogo</span>
+                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ floresta_ancia</span>
                 </div>
+                
                 
                 <div class="stat-row">
                   <span>❤️ HP</span>
-                  <span style="color: #4ade80;">282 / 100</span>
+                  <span style="color: #4ade80;">330 / 100</span>
                 </div>
+                
+                
                 <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 112.9k gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 9691 kills</span>
+                  <span style="color: #facc15; font-weight: 800;">💰 114.5k gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 9712 kills</span>
                 </div>
+                
               </div>
               
               <div class="acc-item">
+                
                 <div class="acc-item-header">
                   <span>🔥 anonimo (Nv. 99)</span>
-                  <span style="color: #ef4444;">Paras</span>
+                  <span style="color: #ef4444;">Pidgeotto</span>
                 </div>
                 
                 <div class="stat-row" style="background: rgba(239, 68, 68, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
-                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ caverna_do_fogo</span>
+                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ floresta_ancia</span>
                 </div>
+                
                 
                 <div class="stat-row">
                   <span>❤️ HP</span>
-                  <span style="color: #4ade80;">145 / 100</span>
+                  <span style="color: #4ade80;">294 / 100</span>
                 </div>
+                
+                
                 <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 106.0k gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 11853 kills</span>
+                  <span style="color: #facc15; font-weight: 800;">💰 108.0k gp</span>
+                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 11891 kills</span>
                 </div>
+                
               </div>
               
             
@@ -1099,7 +1172,7 @@
         </div>
 
         <div class="bot-footer">
-          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-poketrue">💰 834.8k gp • RAM: 13.6 MB</span>
+          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-poketrue">💰 840.0k gp • RAM: 13.6 MB</span>
           <a href="https://kbelludoo.github.io/bot-template-go/?v=force1" target="_blank" class="btn-link">Abrir Dashboard ↗</a>
         </div>
       </div>
@@ -1112,118 +1185,18 @@
               <h3>✨ Lux Idle Multi-Bot</h3>
               <span class="bot-port">PORTA 3012 • GO NATIVE</span>
             </div>
-            <span class="badge-status" id="badge-luxidle">HUNTING</span>
+            <span class="badge-status" id="badge-luxidle">OFFLINE</span>
           </div>
 
           <div class="acc-list" id="acclist-luxidle">
             
-              
-              <div class="acc-item">
-                <div class="acc-item-header">
-                  <span>✨ Personagem #1 (Nv. 11)</span>
-                  <span style="color: #f59e0b;">knight</span>
-                </div>
-                
-                <div class="stat-row" style="background: rgba(245, 158, 11, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
-                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ troll-cave</span>
-                </div>
-                
-                <div class="stat-row">
-                  <span>❤️ HP</span>
-                  <span style="color: #4ade80;">300 / 300</span>
-                </div>
-                <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 26.4k gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 0 kills</span>
-                </div>
-              </div>
-              
-              <div class="acc-item">
-                <div class="acc-item-header">
-                  <span>✨ Personagem #2 (Nv. 17)</span>
-                  <span style="color: #f59e0b;">druid</span>
-                </div>
-                
-                <div class="stat-row" style="background: rgba(245, 158, 11, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
-                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ troll-cave</span>
-                </div>
-                
-                <div class="stat-row">
-                  <span>❤️ HP</span>
-                  <span style="color: #4ade80;">230 / 230</span>
-                </div>
-                <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 1.4k gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 0 kills</span>
-                </div>
-              </div>
-              
-              <div class="acc-item">
-                <div class="acc-item-header">
-                  <span>✨ Personagem #3 (Nv. 18)</span>
-                  <span style="color: #f59e0b;">sorcerer</span>
-                </div>
-                
-                <div class="stat-row" style="background: rgba(245, 158, 11, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
-                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ troll-cave</span>
-                </div>
-                
-                <div class="stat-row">
-                  <span>❤️ HP</span>
-                  <span style="color: #4ade80;">235 / 235</span>
-                </div>
-                <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 1.4k gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 0 kills</span>
-                </div>
-              </div>
-              
-              <div class="acc-item">
-                <div class="acc-item-header">
-                  <span>✨ Personagem #4 (Nv. 14)</span>
-                  <span style="color: #f59e0b;">paladin</span>
-                </div>
-                
-                <div class="stat-row" style="background: rgba(245, 158, 11, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
-                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ troll-cave</span>
-                </div>
-                
-                <div class="stat-row">
-                  <span>❤️ HP</span>
-                  <span style="color: #4ade80;">280 / 280</span>
-                </div>
-                <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 1.0k gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 0 kills</span>
-                </div>
-              </div>
-              
-              <div class="acc-item">
-                <div class="acc-item-header">
-                  <span>✨ Personagem #5 (Nv. 11)</span>
-                  <span style="color: #f59e0b;">monk</span>
-                </div>
-                
-                <div class="stat-row" style="background: rgba(245, 158, 11, 0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;">
-                  <span style="font-weight: 700; font-size: 0.72rem;">🗺️ troll-cave</span>
-                </div>
-                
-                <div class="stat-row">
-                  <span>❤️ HP</span>
-                  <span style="color: #4ade80;">280 / 280</span>
-                </div>
-                <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 1.1k gp</span>
-                  <span style="color: #38bdf8; font-weight: 700;">⚔️ 0 kills</span>
-                </div>
-              </div>
-              
+              <div style="color: var(--text-dim); font-size: 0.8rem;">Carregando telemetria...</div>
             
           </div>
         </div>
 
         <div class="bot-footer">
-          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-luxidle">💰 31.3k gp • RAM: 69.4 MB</span>
+          <span style="font-size: 0.72rem; color: var(--text-dim);" id="summary-luxidle">💰 0 gp • RAM: 69.4 MB</span>
           <a href="https://kbelludoo.github.io/luxidle-bot/" target="_blank" class="btn-link">Abrir Dashboard ↗</a>
         </div>
       </div>
@@ -1233,106 +1206,170 @@
     <div class="stream-ticker-wrap">
       <div class="ticker-badge">🔴 LIVE FLEET</div>
       <div class="stream-ticker-track">
-        <span>⚡ VPS CLUSTER ONLINE • BOTS NATIVOS EM GO • ZERO NODE.JS</span>
-        <span>🎮 HUNTERA IDLE • TIBIDLE MULTI-BOT • SIGMA IDLE MULTI-BOT • LEVELING IDLE 2D • BAIAK IDLE MULTI-BOT • POKELEGACY ONLINE • POKEIDLE.IO MULTI-BOT • POKE IDLE WORLD • KICK MINER GO • TWITCH MINER GO • LOL IDLE MULTI-BOT • FARM RICOCHET BOT • POKETRUE MULTI-BOT • LUX IDLE MULTI-BOT</span>
+        <span>⚡ VPS CLUSTER ONLINE • BOTS & STREAM MINERS NATIVOS EM GO • ZERO NODE.JS</span>
+        <span>🎮 JOGOS & 📺 STREAMS: HUNTERA IDLE • TIBIDLE MULTI-BOT • SIGMA IDLE MULTI-BOT • LEVELING IDLE 2D • BAIAK IDLE MULTI-BOT • POKELEGACY ONLINE • POKEIDLE.IO MULTI-BOT • POKE IDLE WORLD • KICK MINER GO • TWITCH MINER GO • LOL IDLE MULTI-BOT • FARM RICOCHET BOT • POKETRUE MULTI-BOT • LUX IDLE MULTI-BOT</span>
       </div>
     </div>
   </div>
 
   <script>
-    function switchPlayerTab(tab) {
-      document.querySelectorAll('.player-tab').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.player-view').forEach(v => v.classList.remove('active'));
-      if (tab === 'twitch') {
-        document.getElementById('tab-twitch')?.classList.add('active');
-        document.getElementById('twitchPlayerWrap')?.classList.add('active');
-      } else if (tab === 'youtube') {
-        document.getElementById('tab-youtube')?.classList.add('active');
-        document.getElementById('youtubePlayerWrap')?.classList.add('active');
-      } else if (tab === 'preview') {
-        document.getElementById('tab-preview')?.classList.add('active');
-        document.getElementById('previewPlayerWrap')?.classList.add('active');
-        refreshPreview();
-      }
-    }
+    function getUnifiedAccounts(b) {
+      if (!b || !b.status) return [];
 
-    function refreshPreview() {
-      const img = document.getElementById('streamPreviewImg');
-      if (img) {
-        const isRestreamRepo = window.location.pathname.includes('restream-go');
-        const base = isRestreamRepo ? 'https://kbelludoo.github.io/restream-go/' : '';
-        img.src = base + 'preview.png?t=' + Date.now();
+      
+      if (b.status.accounts && typeof b.status.accounts === 'object') {
+        var accKeys = Object.keys(b.status.accounts);
+        if (accKeys.length > 0 && b.status.accounts[accKeys[0]] && b.status.accounts[accKeys[0]].streamers) {
+          return accKeys.sort().map(function(k) {
+            var entry = b.status.accounts[k];
+            var streams = entry.streamers || {};
+            var sKeys = Object.keys(streams).sort();
+            var totalPts = 0;
+            var liveCount = 0;
+            var liveNames = [];
+            for (var si = 0; si < sKeys.length; si++) {
+              var st = streams[sKeys[si]];
+              totalPts += (st.points || 0);
+              if (st.isLive) {
+                liveCount++;
+                if (liveNames.length < 3) liveNames.push(st.streamer || sKeys[si]);
+              }
+            }
+            var areaText = (entry.activeStreams || liveCount) + ' canais ativos';
+            if (liveNames.length > 0) areaText = 'Ao vivo: ' + liveNames.join(', ') + ' (+' + liveCount + ')';
+            return {
+              name: 'Conta Kick #1',
+              level: 0,
+              vocation: 'Kick Stream',
+              currentArea: areaText,
+              gold: totalPts,
+              kills: liveCount,
+              status: 'Minerando',
+              isStream: true
+            };
+          });
+        }
       }
+
+      if (Array.isArray(b.status.accounts) && b.status.accounts.length > 0) {
+        return b.status.accounts;
+      }
+      if (b.status.accounts && typeof b.status.accounts === 'object' && Object.keys(b.status.accounts).length > 0) {
+        return Object.values(b.status.accounts);
+      }
+      if (b.status.bots && typeof b.status.bots === 'object') {
+        var keys = Object.keys(b.status.bots).sort();
+        return keys.map(function(k) {
+          var entry = b.status.bots[k];
+          var s = entry.status || {};
+          var tel = s.telemetry || {};
+          var statusStr = s.status || 'online';
+          if (s.treino) statusStr = 'Treino';
+          return {
+            name: entry.label || entry.name || k,
+            level: s.level || tel.level || 1,
+            vocation: s.vocation || '',
+            currentArea: s.currentArea || (s.hunt && s.hunt.name) || (s.treino ? 'Treino de Skills' : ''),
+            gold: s.gold || tel.gold || 0,
+            kills: s.kills || tel.kills || 0,
+            stamina: tel.stamina || '',
+            status: statusStr
+          };
+        });
+      }
+      if (b.status.statuses && typeof b.status.statuses === 'object') {
+        var keys = Object.keys(b.status.statuses).sort();
+        return keys.map(function(k) {
+          var entry = b.status.statuses[k];
+          var streams = entry.streamers || {};
+          var watching = Object.values(streams).filter(function(x) { return x.watching; }).map(function(x) { return x.displayName || x.login; });
+          var liveCount = Object.values(streams).filter(function(x) { return x.isLive; }).length;
+          var totalPts = 0;
+          Object.values(streams).forEach(function(x) { totalPts += (x.points || 0); });
+          return {
+            name: entry.username || k,
+            level: 0,
+            vocation: 'Twitch Drops',
+            currentArea: watching.length ? 'Assistindo ' + watching.join(', ') : 'Minerando canais Twitch',
+            gold: totalPts,
+            kills: liveCount,
+            status: 'Online',
+            isStream: true
+          };
+        });
+      }
+      return [];
     }
-    setInterval(refreshPreview, 8000);
 
     async function refreshHub() {
       try {
-        const isRestreamRepo = window.location.pathname.includes('restream-go');
-        const statusUrl = isRestreamRepo
-          ? 'https://kbelludoo.github.io/bot-template-go/status.json?t=' + Date.now() + '&v=' + Math.random()
-          : 'status.json?t=' + Date.now() + '&v=' + Math.random();
-
-        const res = await fetch(statusUrl, {
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache'
-          }
-        });
+        var res = await fetch('status.json?t=' + Date.now());
         if (!res.ok) return;
-        const data = await res.json();
+        var data = await res.json();
         if (!data || !data.bots) return;
 
         if (data.vps) {
-          const v = data.vps;
-          document.getElementById('ramVal').textContent = `${v.ramUsedMb || 0} / ${v.ramTotalMb || 0} MB`;
-          document.getElementById('ramProgress').style.width = (v.ramPercent || 0) + '%';
-          document.getElementById('ramSub').textContent = `Livre: ${v.ramAvailableMb || 0} MB (${v.ramPercent || 0}% em uso)`;
-          if (v.uptime) {
-            document.getElementById('lastUpdatedSub').textContent = v.uptime.replace('up ', '').split(',')[0];
-          }
+          var v = data.vps;
+          var ramVal = document.getElementById('ramVal');
+          var ramProg = document.getElementById('ramProgress');
+          var ramSub = document.getElementById('ramSub');
+          if (ramVal) ramVal.textContent = (v.ramUsedMb || 0) + ' / ' + (v.ramTotalMb || 0) + ' MB';
+          if (ramProg) ramProg.style.width = (v.ramPercent || 0) + '%';
+          if (ramSub) ramSub.textContent = 'Livre: ' + (v.ramAvailableMb || 0) + ' MB (' + (v.ramPercent || 0) + '% em uso)';
         }
 
-        const botKeys = Object.keys(data.bots);
-        const activeCount = botKeys.filter(k => (data.bots[k].status?.accounts || []).length > 0).length;
-        document.getElementById('botsCountVal').textContent = `${activeCount} / ${botKeys.length}`;
+        var botKeys = Object.keys(data.bots);
+        var activeCount = botKeys.filter(function(k) { return getUnifiedAccounts(data.bots[k]).length > 0; }).length;
+        var botsCountEl = document.getElementById('botsCountVal');
+        if (botsCountEl) botsCountEl.textContent = activeCount + ' / ' + botKeys.length;
 
-        for (const [k, b] of Object.entries(data.bots)) {
-          const accList = document.getElementById('acclist-' + k);
-          const badge = document.getElementById('badge-' + k);
-          const accounts = Array.isArray(b.status?.accounts) ? b.status.accounts : Object.values(b.status?.accounts || {});
+        for (var i = 0; i < botKeys.length; i++) {
+          var k = botKeys[i];
+          var b = data.bots[k];
+          var accList = document.getElementById('acclist-' + k);
+          var badge = document.getElementById('badge-' + k);
+          var accounts = getUnifiedAccounts(b);
+          var isStream = (k === 'kickminer' || k === 'twitchminer');
 
           if (badge && accounts.length > 0) {
-            badge.textContent = accounts[0].status ? accounts[0].status.toUpperCase() : accounts.length + '/' + accounts.length + ' ATIVO';
+            if (isStream) {
+              badge.textContent = accounts[0].kills > 0 ? accounts[0].kills + ' AO VIVO' : 'MINERANDO';
+            } else {
+              badge.textContent = accounts.length > 1 ? accounts.length + '/' + accounts.length + ' ATIVAS' : (accounts[0].status ? accounts[0].status.toUpperCase() : 'ONLINE');
+            }
           }
           if (accList && accounts.length > 0) {
-            accList.innerHTML = accounts.map(a => `
-              <div class="acc-item">
-                <div class="acc-item-header">
-                  <span>${a.name || 'Conta'} (Nv. ${a.level || 1})</span>
-                  <span>${a.vocation || ''}</span>
-                </div>
-                ${a.currentArea ? `<div class="stat-row" style="padding: 4px 8px; border-radius: 6px; margin-bottom: 4px; background: rgba(255,255,255,0.05); font-weight: 700;">🗺️ ${a.currentArea}</div>` : ''}
-                <div class="stat-row">
-                  <span>❤️ HP</span>
-                  <span style="color: #4ade80;">${(a.hp || 0).toLocaleString()} / ${(a.maxHp || 0).toLocaleString()}</span>
-                </div>
-                <div class="stat-row">
-                  <span style="color: #facc15; font-weight: 800;">💰 ${(a.gold || 0).toLocaleString()} gp</span>
-                  <span style="color: #38bdf8;">⚔️ ${(a.kills || 0).toLocaleString()} kills</span>
-                </div>
-              </div>
-            `).join('');
+            accList.innerHTML = accounts.map(function(a) {
+              var s = '<div class="acc-item">';
+              if (isStream) {
+                s += '<div class="acc-item-header"><span>' + (a.name || 'Conta') + '</span><span style="font-size: 0.72rem; font-weight: 700;">STREAM VIEWER</span></div>';
+                if (a.currentArea) {
+                  s += '<div class="stat-row" style="padding: 4px 8px; border-radius: 6px; margin-bottom: 4px; background: rgba(255,255,255,0.05); font-weight: 700;">📡 ' + a.currentArea + '</div>';
+                }
+                s += '<div class="stat-row"><span style="color: #facc15; font-weight: 800;">⭐ ' + (a.gold || 0).toLocaleString() + ' pontos</span><span style="color: #38bdf8; font-weight: 700;">🔴 ' + (a.kills || 0) + ' canais ao vivo</span></div>';
+              } else {
+                s += '<div class="acc-item-header"><span>' + (a.name || 'Conta') + ' (Nv. ' + (a.level || 1) + ')</span><span>' + (a.vocation || '') + '</span></div>';
+                if (a.currentArea) {
+                  s += '<div class="stat-row" style="padding: 4px 8px; border-radius: 6px; margin-bottom: 4px; background: rgba(255,255,255,0.05); font-weight: 700;">🗺️ ' + a.currentArea + '</div>';
+                }
+                if (a.maxHp) {
+                  s += '<div class="stat-row"><span>❤️ HP</span><span style="color: #4ade80;">' + (a.hp || 0).toLocaleString() + ' / ' + (a.maxHp || 0).toLocaleString() + '</span></div>';
+                }
+                if (a.stamina) {
+                  s += '<div class="stat-row"><span>⚡ Stamina</span><span style="color: #38bdf8; font-weight: 600;">' + a.stamina + '</span></div>';
+                }
+                s += '<div class="stat-row"><span style="color: #facc15; font-weight: 800;">💰 ' + (a.gold || 0).toLocaleString() + ' gp</span><span style="color: #38bdf8;">⚔️ ' + (a.kills || 0).toLocaleString() + ' kills</span></div>';
+              }
+              s += '</div>';
+              return s;
+            }).join('');
           }
         }
       } catch (e) {
         console.warn('Erro ao atualizar hub:', e);
       }
     }
-
-    refreshHub();
-    setInterval(refreshHub, 4000);
+    setInterval(refreshHub, 12000);
   </script>
 </body>
 </html>
